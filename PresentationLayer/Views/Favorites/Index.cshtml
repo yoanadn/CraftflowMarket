@@ -1,0 +1,27 @@
+@model FavoritesPageViewModel
+@{
+    ViewData["Title"] = "Любими продукти";
+}
+
+<section class="section-block">
+    <div class="section-head">
+        <h1>Любими продукти</h1>
+    </div>
+
+    @if (Model.Products.Count == 0)
+    {
+        <div class="empty-box">
+            <p>Все още нямаш любими продукти.</p>
+            <a asp-controller="Products" asp-action="Index" class="btn-main">Започни пазаруване</a>
+        </div>
+    }
+    else
+    {
+        <div class="product-grid">
+            @foreach (var product in Model.Products)
+            {
+                <partial name="_ProductCard" model="product" />
+            }
+        </div>
+    }
+</section>

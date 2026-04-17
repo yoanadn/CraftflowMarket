@@ -1,0 +1,40 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<section class="auth-shell">
+    <div class="auth-card">
+        <h1>Вход</h1>
+        <p class="soft-text">Влез в профила си, за да управляваш любими, поръчки и профил.</p>
+
+        <form asp-action="Login" method="post" class="auth-form">
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            <label>
+                Username или имейл
+                <input asp-for="Identifier" />
+                <span asp-validation-for="Identifier" class="field-validation-error"></span>
+            </label>
+
+            <label>
+                Парола
+                <input asp-for="Password" />
+                <span asp-validation-for="Password" class="field-validation-error"></span>
+            </label>
+
+            <div asp-validation-summary="ModelOnly" class="field-validation-error"></div>
+
+            <button type="submit" class="btn-main wide-btn">Вход</button>
+        </form>
+
+        <p class="auth-foot-note">
+            Нямаш профил?
+            <a asp-action="Register">Създай профил</a>
+        </p>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

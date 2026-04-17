@@ -1,0 +1,220 @@
+﻿@model ProfilePageViewModel
+@inject PresentationLayer.Infrastructure.IUserSessionService UserSession
+@{
+    ViewData["Title"] = "Профил";
+    var isAdmin = UserSession.IsAdmin;
+    string GetOrderStatusLabel(BusinessLayer.Enums.OrderStatus status) => status switch
+    {
+        BusinessLayer.Enums.OrderStatus.Pending => "Чакаща",
+        BusinessLayer.Enums.OrderStatus.Processing => "Обработва се",
+        BusinessLayer.Enums.OrderStatus.Sent => "Изпратена",
+        BusinessLayer.Enums.OrderStatus.Delivered => "Доставена",
+        BusinessLayer.Enums.OrderStatus.Cancelled => "Отказана",
+        _ => status.ToString()
+    };
+}
+
+<section class="profile-header-card">
+    <div class="profile-avatar profile-avatar-initials" aria-label="@($"Аватар с инициали за {Model.FullName}")">@Model.AvatarInitials</div>
+    <div>
+        <h1>@Model.FullName</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.Bio))
+        {
+            <p>@Model.Bio</p>
+        }
+        <div class="profile-meta">
+            <span>@("@" + Model.Username)</span>
+            <span>@Model.Email</span>
+            @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+            {
+                <span>@Model.PhoneNumber</span>
+            }
+            <span>Присъединил(а) се: @Model.JoinedOn.ToString("MMM dd, yyyy")</span>
+        </div>
+    </div>
+    <div class="profile-header-actions">
+        <a asp-action="Edit" class="btn-ghost">Редактирай профила</a>
+        @if (isAdmin)
+        {
+            <a asp-controller="Admin" asp-action="Index" class="btn-main">Отвори админ панела</a>
+        }
+        else
+        {
+            <form asp-action="DeleteProfile" method="post" class="inline-form">
+                <button type="submit"
+                        class="btn-danger"
+                        onclick="return confirm('Сигурен/на ли си, че искаш да изтриеш профила си? Това действие е необратимо.');">
+                    Изтрий профила
+                </button>
+            </form>
+        }
+    </div>
+</section>
+
+@if (!isAdmin)
+{
+    <nav class="tab-bar">
+        <a asp-action="Index" asp-route-tab="orders" class="@(Model.ActiveTab == "orders" ? "active" : "")">Поръчки</a>
+        <a asp-action="Index" asp-route-tab="products" class="@(Model.ActiveTab == "products" ? "active" : "")">Моите продукти</a>
+    </nav>
+}
+
+@if (isAdmin)
+{
+    <section class="section-block">
+        <div class="admin-hero">
+            <h2>Админ режим на профила</h2>
+            <p>Този профил е конфигуриран само за управление на платформата. Пазаруването и любимите са изключени.</p>
+        </div>
+    </section>
+}
+else if (Model.ActiveTab == "products")
+{
+    <section class="section-block">
+        <div class="section-head">
+            <h2>Моите продукти</h2>
+        </div>
+
+        <article class="profile-add-product-card">
+            <h3>Добави нов продукт</h3>
+            <p class="soft-text">Създай обява директно от профила си.</p>
+
+            <form asp-action="AddProduct" method="post" enctype="multipart/form-data" class="profile-add-product-form">
+                <label>
+                    Име на продукта
+                    <input asp-for="NewProduct.Name" />
+                    <span asp-validation-for="NewProduct.Name" class="field-validation-error"></span>
+                </label>
+
+                <div class="auth-grid-2">
+                    <label>
+                        Категория
+                        <select asp-for="NewProduct.Category">
+                            <option value="">Избери категория</option>
+                            @foreach (var category in Model.AvailableCategories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                        <span asp-validation-for="NewProduct.Category" class="field-validation-error"></span>
+                    </label>
+
+                    <label>
+                        Цена
+                        <input asp-for="NewProduct.Price" type="number" min="0.01" step="0.01" />
+                        <span asp-validation-for="NewProduct.Price" class="field-validation-error"></span>
+                    </label>
+                </div>
+
+                <label>
+                    Описание
+                    <textarea asp-for="NewProduct.Description" rows="4"></textarea>
+                    <span asp-validation-for="NewProduct.Description" class="field-validation-error"></span>
+                </label>
+
+                <div class="auth-grid-2">
+                    <label>
+                        Етикет за пол
+                        <select asp-for="NewProduct.GenderTag">
+                            <option value="">Не е посочено</option>
+                            <option value="women">Жени</option>
+                            <option value="men">Мъже</option>
+                            <option value="unisex">Унисекс</option>
+                            <option value="kids">Деца</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Етикети за размер
+                        <input asp-for="NewProduct.SizeTags" placeholder="EU 38, EU 39, M" />
+                        <span class="soft-text">По желание. Остави празно за продукти без размер.</span>
+                    </label>
+                </div>
+
+                <label>
+                    Снимки на продукта
+                    <div class="file-input" data-file-input>
+                        <input type="file" name="imageFiles" accept="image/*" multiple class="file-input-native" data-file-input-native />
+                        <button type="button" class="file-input-button" data-file-input-trigger>Избери файлове</button>
+                        <span class="file-input-status" data-file-input-status>Няма избрани файлове</span>
+                    </div>
+                </label>
+
+                <div asp-validation-summary="ModelOnly" class="field-validation-error"></div>
+                <button type="submit" class="btn-main">Добави продукт</button>
+            </form>
+        </article>
+
+        @if (Model.MyProducts.Count == 0)
+        {
+            <p class="soft-text">Все още нямаш продукти. Добави първата си обява по-горе.</p>
+        }
+        else
+        {
+            <div class="product-grid my-products-grid">
+                @foreach (var product in Model.MyProducts)
+                {
+                    <article class="my-product-manage-card">
+                        <partial name="_ProductCard" model="product" />
+                        <div class="my-product-actions">
+                            <a asp-action="EditProduct" asp-route-productId="@product.Id" class="btn-ghost btn-small">Редактирай</a>
+                            <form asp-action="DeleteProduct" asp-route-productId="@product.Id" method="post" class="inline-form">
+                                <button type="submit" class="btn-danger btn-small" onclick="return confirm('Да изтрия ли този продукт?')">Изтрий</button>
+                            </form>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </section>
+}
+else
+{
+    <section class="section-block">
+        <div class="section-head">
+            <h2>История на поръчките</h2>
+        </div>
+
+        @if (Model.Orders.Count == 0)
+        {
+            <p class="soft-text">Все още нямаш поръчки.</p>
+            <a asp-controller="Products" asp-action="Index" class="btn-main">Започни пазаруване</a>
+        }
+        else
+        {
+            @foreach (var order in Model.Orders)
+            {
+                <article class="order-card">
+                    <div class="order-card-head">
+                        <div>
+                            <h3>Поръчка #ORD-@order.OrderId.ToString("000")</h3>
+                            <p>@order.CreatedOn.ToString("MMMM dd, yyyy")</p>
+                        </div>
+                        <div class="order-status">@GetOrderStatusLabel(order.Status)</div>
+                        <strong>€@order.Total.ToString("0.00")</strong>
+                    </div>
+
+                    @foreach (var item in order.Items)
+                    {
+                        <div class="order-item">
+                            <img src="@item.ImageUrl" alt="@item.ProductName" />
+                            <div>
+                                <p>@item.ProductName</p>
+                                <small>Количество: @item.Quantity</small>
+                            </div>
+                            <strong>€@item.Price.ToString("0.00")</strong>
+                        </div>
+                    }
+                </article>
+            }
+        }
+    </section>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+

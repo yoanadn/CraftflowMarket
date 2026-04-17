@@ -1,0 +1,52 @@
+﻿@model ProfileEditViewModel
+@{
+    ViewData["Title"] = "Редакция на профил";
+}
+
+<section class="auth-shell">
+    <div class="auth-card profile-edit-card">
+        <h1>Редакция на профил</h1>
+        <p class="soft-text">Актуализирай личните си данни. Аватарът се генерира автоматично от инициалите ти.</p>
+
+        <form asp-action="Edit" method="post" class="auth-form">
+            <div class="auth-grid-2">
+                <label>
+                    Име
+                    <input asp-for="FirstName" />
+                    <span asp-validation-for="FirstName" class="field-validation-error"></span>
+                </label>
+
+                <label>
+                    Фамилия
+                    <input asp-for="LastName" />
+                    <span asp-validation-for="LastName" class="field-validation-error"></span>
+                </label>
+            </div>
+
+            <label>
+                Имейл
+                <input asp-for="Email" />
+                <span asp-validation-for="Email" class="field-validation-error"></span>
+            </label>
+
+            <label>
+                Телефон
+                <input asp-for="PhoneNumber" />
+                <span asp-validation-for="PhoneNumber" class="field-validation-error"></span>
+            </label>
+
+            <label>
+                Биография
+                <textarea asp-for="Bio" rows="3" maxlength="400" placeholder="Напиши нещо за себе си..."></textarea>
+                <span asp-validation-for="Bio" class="field-validation-error"></span>
+            </label>
+
+            <div asp-validation-summary="ModelOnly" class="field-validation-error"></div>
+            <button type="submit" class="btn-main wide-btn">Запази промените</button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

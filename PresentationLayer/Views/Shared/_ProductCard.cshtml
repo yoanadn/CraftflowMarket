@@ -1,0 +1,73 @@
+@model ProductCardViewModel
+@inject PresentationLayer.Infrastructure.IUserSessionService UserSession
+@{
+    var showFavouriteButton = !(ViewData["HideFavouriteButton"] as bool? ?? false) && !UserSession.IsAdmin;
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+    var hasGenderTag = !string.IsNullOrWhiteSpace(Model.GenderTag);
+    var visibleSizeTags = Model.SizeTags.Take(2).ToList();
+    var hasMoreSizes = Model.SizeTags.Count > visibleSizeTags.Count;
+    string GenderLabel(string value) => value.ToLowerInvariant() switch
+    {
+        "women" => "Жена",
+        "men" => "Мъж",
+        "unisex" => "Унисекс",
+        "kids" => "Деца",
+        _ => value
+    };
+}
+
+<article class="product-card">
+    <div class="product-media-wrap">
+        <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id" class="product-media-link">
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="product-media" loading="lazy" />
+        </a>
+
+        @if (showFavouriteButton)
+        {
+            <form asp-controller="Products" asp-action="ToggleFavourite" method="post" class="favourite-form">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="icon-pill favourite-toggle" aria-label="Превключи любими">
+                    <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                        @if (Model.IsFavourite)
+                        {
+                            <path d="M12 21s-6.9-4.3-10-8.1C-0.5 9.8 1 5.2 4.9 4.2 7.3 3.6 9.8 4.5 12 7c2.2-2.5 4.7-3.4 7.1-2.8 3.9 1 5.4 5.6 2.9 8.7C18.9 16.7 12 21 12 21z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                        }
+                        else
+                        {
+                            <path d="M12 21s-6.9-4.3-10-8.1C-0.5 9.8 1 5.2 4.9 4.2 7.3 3.6 9.8 4.5 12 7c2.2-2.5 4.7-3.4 7.1-2.8 3.9 1 5.4 5.6 2.9 8.7C18.9 16.7 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                        }
+                    </svg>
+                </button>
+            </form>
+        }
+    </div>
+
+    <div class="product-card-body">
+        <p class="product-category">@Model.Category</p>
+        <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id" class="product-name">@Model.Name</a>
+        <p class="product-shop">@Model.ShopName</p>
+        @if (hasGenderTag || visibleSizeTags.Count > 0)
+        {
+            <div class="product-chip-row">
+                @if (hasGenderTag)
+                {
+                    <span class="product-chip">@GenderLabel(Model.GenderTag!)</span>
+                }
+                @foreach (var sizeTag in visibleSizeTags)
+                {
+                    <span class="product-chip">@sizeTag</span>
+                }
+                @if (hasMoreSizes)
+                {
+                    <span class="product-chip">+@((Model.SizeTags.Count - visibleSizeTags.Count).ToString())</span>
+                }
+            </div>
+        }
+        @if (Model.ReviewsCount > 0)
+        {
+            <p class="product-rating">Рейтинг @Model.Rating.ToString("0.0") (@Model.ReviewsCount)</p>
+        }
+        <p class="product-price">€@Model.Price.ToString("0.00")</p>
+    </div>
+</article>

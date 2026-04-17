@@ -13,6 +13,8 @@ namespace BusinessLayer.Entities.Profiles
 
         public string? PhoneNumber { get; set; }
 
+        public string? Bio { get; set; }
+
         public string? ProfileImageUrl { get; set; }
 
         public ApplicationUser User { get; set; }

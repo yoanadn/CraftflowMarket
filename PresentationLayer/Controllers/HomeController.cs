@@ -1,24 +1,34 @@
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
+using PresentationLayer.Infrastructure;
+using PresentationLayer.Services;
 using System.Diagnostics;
 
 namespace PresentationLayer.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IMarketplaceService marketplaceService;
+        private readonly IUserSessionService userSession;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IMarketplaceService marketplaceService, IUserSessionService userSession)
         {
-            _logger = logger;
+            this.marketplaceService = marketplaceService;
+            this.userSession = userSession;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string? search)
         {
-            return View();
+            var model = await marketplaceService.GetHomePageAsync(userSession.UserId, search);
+            return View(model);
         }
 
         public IActionResult Privacy()
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Sizes()
         {
             return View();
         }

@@ -1,0 +1,98 @@
+@model CheckoutPageViewModel
+@{
+    ViewData["Title"] = "Поръчка";
+}
+
+<section class="section-head">
+    <h1>Поръчка</h1>
+</section>
+
+<section class="checkout-layout">
+    <form asp-action="Checkout" method="post" class="checkout-form-card">
+        <h2>Данни за доставка</h2>
+        <p class="soft-text">Попълни данните за доставка и потвърди метода на плащане.</p>
+
+        <label>
+            Име и фамилия
+            <input asp-for="Input.FullName" autocomplete="name" maxlength="80" />
+            <span asp-validation-for="Input.FullName" class="field-validation-error"></span>
+        </label>
+
+        <label>
+            Телефонен номер
+            <input asp-for="Input.PhoneNumber" autocomplete="tel" inputmode="tel" maxlength="15" placeholder="+359..." />
+            <span asp-validation-for="Input.PhoneNumber" class="field-validation-error"></span>
+        </label>
+
+        <div class="auth-grid-2">
+            <label>
+                Град
+                <input asp-for="Input.City" autocomplete="address-level2" maxlength="50" />
+                <span asp-validation-for="Input.City" class="field-validation-error"></span>
+            </label>
+            <label>
+                Пощенски код
+                <input asp-for="Input.PostalCode" autocomplete="postal-code" inputmode="numeric" maxlength="4" placeholder="1000" />
+                <span asp-validation-for="Input.PostalCode" class="field-validation-error"></span>
+            </label>
+        </div>
+
+        <label>
+            Улица и номер
+            <input asp-for="Input.StreetAddress" autocomplete="street-address" maxlength="120" placeholder="бул. Витоша 25" />
+            <span asp-validation-for="Input.StreetAddress" class="field-validation-error"></span>
+        </label>
+
+        <label>
+            Начин на плащане
+            <select asp-for="Input.PaymentMethod">
+                <option value="cash_on_delivery">Наложен платеж</option>
+            </select>
+        </label>
+
+        <div class="checkout-payment-note">
+            Плащането се извършва към куриера при доставка.
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="field-validation-error"></div>
+
+        <div class="inline-actions">
+            <button type="submit" class="btn-main">Поръчай</button>
+            <a asp-action="Index" class="btn-ghost">Назад към количката</a>
+        </div>
+    </form>
+
+    <aside class="summary-panel">
+        <h2>Обобщение на поръчката</h2>
+
+        @foreach (var item in Model.Items)
+        {
+            <div class="checkout-summary-item">
+                <span>@item.Name x @item.Quantity</span>
+                <strong>€@item.LineTotal.ToString("0.00")</strong>
+            </div>
+        }
+
+        <div class="summary-row">
+            <span>Междинна сума</span>
+            <strong>€@Model.Subtotal.ToString("0.00")</strong>
+        </div>
+        <div class="summary-row">
+            <span>Доставка</span>
+            <strong>@(Model.Shipping == 0 ? "Безплатна" : "€" + Model.Shipping.ToString("0.00"))</strong>
+        </div>
+        <div class="summary-row summary-total">
+            <span>Общо</span>
+            <strong>€@Model.Total.ToString("0.00")</strong>
+        </div>
+
+        <div class="checkout-summary-note">
+            Безплатна доставка за поръчки над 75 €.
+        </div>
+    </aside>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

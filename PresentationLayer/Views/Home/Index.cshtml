@@ -1,8 +1,76 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model HomePageViewModel
+@inject PresentationLayer.Infrastructure.IUserSessionService UserSession
+@{
+    ViewData["Title"] = "Craftflow Market";
+    var heroProduct = Model.FeaturedProducts.FirstOrDefault();
+    var profileAction = UserSession.IsAuthenticated ? "Index" : "Login";
+    var profileController = UserSession.IsAuthenticated ? "Profile" : "Account";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-section">
+    <div>
+        <p class="hero-kicker">Пазар за ръчна изработка</p>
+        <h1 class="hero-title">Открий спокойни, премиум ръчно изработени находки за дома и стила си.</h1>
+        <p class="hero-text">Подбрани от независими творци. Качествени материали, малки серии и внимание към детайла.</p>
+        <div class="hero-actions">
+            <a asp-controller="Products" asp-action="Index" class="btn-main">Разгледай продукти</a>
+            <a asp-controller="@profileController" asp-action="@profileAction" class="btn-ghost">Профил</a>
+        </div>
+    </div>
+
+    @if (heroProduct is not null)
+    {
+        <a asp-controller="Products" asp-action="Details" asp-route-id="@heroProduct.Id" class="hero-product-card">
+            <img src="@heroProduct.ImageUrl" alt="@heroProduct.Name" class="hero-product-image" />
+            <div class="hero-product-content">
+                <p class="hero-product-category">@heroProduct.Category</p>
+                <p class="hero-product-name">@heroProduct.Name</p>
+                <p class="hero-product-price">€@heroProduct.Price.ToString("0.00")</p>
+            </div>
+        </a>
+    }
+</section>
+
+<section class="section-block">
+    <div class="section-head">
+        <h2>Любими продукти</h2>
+        <a asp-controller="Products" asp-action="Index">Виж всички</a>
+    </div>
+    <div class="product-grid">
+        @foreach (var product in Model.FavouriteProducts)
+        {
+            <partial name="_ProductCard" model="product" />
+        }
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-head">
+        <h2>Популярни категории</h2>
+    </div>
+    <div class="category-grid">
+        @foreach (var category in Model.PopularCategories)
+        {
+            <a asp-controller="Products" asp-action="Index" asp-route-category="@category.Name" class="category-tile">
+                <img src="@category.ImageUrl" alt="@category.Name" loading="lazy" />
+                <div class="category-overlay">
+                    <h3>@category.Name</h3>
+                    <p>@category.ProductCount продукта</p>
+                </div>
+            </a>
+        }
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-head">
+        <h2>Най-нови продукти</h2>
+        <a asp-controller="Products" asp-action="Index" asp-route-sort="newest">Разгледай най-новите</a>
+    </div>
+    <div class="product-grid">
+        @foreach (var product in Model.NewestProducts)
+        {
+            <partial name="_ProductCard" model="product" />
+        }
+    </div>
+</section>

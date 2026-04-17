@@ -1,0 +1,167 @@
+@model ProductDetailsPageViewModel
+@inject PresentationLayer.Infrastructure.IUserSessionService UserSession
+@{
+    ViewData["Title"] = Model.Name;
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+    var galleryImages = Model.ImageUrls.Count == 0
+        ? new[] { "https://placehold.co/1000x1000/f4f1eb/485843?text=Craftflow" }
+        : Model.ImageUrls;
+    var mainImage = galleryImages.First();
+    var isAdmin = UserSession.IsAdmin;
+    var hasGenderTag = !string.IsNullOrWhiteSpace(Model.GenderTag);
+    string GenderLabel(string value) => value.ToLowerInvariant() switch
+    {
+        "women" => "Жена",
+        "men" => "Мъж",
+        "unisex" => "Унисекс",
+        "kids" => "Деца",
+        _ => value
+    };
+}
+
+<section class="details-layout">
+    <div class="gallery-panel details-carousel" data-carousel>
+        <img src="@mainImage" alt="@Model.Name" class="details-main-image" data-carousel-main />
+
+        @if (galleryImages.Count > 1)
+        {
+            <button type="button" class="carousel-nav prev" data-carousel-prev aria-label="Предишна снимка">&#10094;</button>
+            <button type="button" class="carousel-nav next" data-carousel-next aria-label="Следваща снимка">&#10095;</button>
+        }
+
+        <div class="details-thumb-row">
+            @for (var i = 0; i < galleryImages.Count; i++)
+            {
+                var image = galleryImages[i];
+                var isActive = i == 0;
+                <button type="button" class="thumb-btn @(isActive ? "active" : string.Empty)" data-carousel-thumb data-image-url="@image" aria-label="Покажи снимка @(i + 1)">
+                    <img src="@image" alt="@Model.Name миниатюра @(i + 1)" class="details-thumb" />
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="details-info">
+        <p class="product-category">@Model.Category</p>
+        <h1>@Model.Name</h1>
+        <p class="details-price">€@Model.Price.ToString("0.00")</p>
+        @if (Model.ReviewsCount > 0)
+        {
+            <p class="product-rating">Рейтинг @Model.Rating.ToString("0.0") (@Model.ReviewsCount отзива)</p>
+        }
+        @if (hasGenderTag || Model.SizeTags.Count > 0)
+        {
+            <div class="product-chip-row details-chip-row">
+                @if (hasGenderTag)
+                {
+                    <span class="product-chip">@GenderLabel(Model.GenderTag!)</span>
+                }
+                @foreach (var sizeTag in Model.SizeTags)
+                {
+                    <span class="product-chip">@sizeTag</span>
+                }
+            </div>
+            <a asp-controller="Home" asp-action="Sizes" class="size-guide-link">Виж таблицата с размери (EU)</a>
+        }
+        <p class="details-description">@Model.Description</p>
+
+        @if (isAdmin)
+        {
+            <div class="details-actions">
+                <a asp-controller="Admin" asp-action="EditProduct" asp-route-productId="@Model.ProductId" class="btn-main">Редактирай в админ панела</a>
+            </div>
+            <p class="soft-text">Админ режим: действията за пазаруване са изключени.</p>
+        }
+        else
+        {
+            <div class="details-actions">
+                <form asp-controller="Products" asp-action="AddToCart" method="post">
+                    <input type="hidden" name="productId" value="@Model.ProductId" />
+                    <input type="hidden" name="quantity" value="1" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="btn-main">Добави в количката</button>
+                </form>
+
+                <form asp-controller="Products" asp-action="ToggleFavourite" method="post">
+                    <input type="hidden" name="productId" value="@Model.ProductId" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="btn-ghost">@((Model.IsFavourite ? "Премахни от любими" : "Добави в любими"))</button>
+                </form>
+            </div>
+        }
+
+        <div class="seller-box">
+            <h3>@Model.ShopName</h3>
+            <p>@Model.ShopDescription</p>
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-head">
+        <h2>Отзиви</h2>
+    </div>
+
+    @if (!isAdmin && UserSession.IsAuthenticated)
+    {
+        <article class="review-form-card">
+            <h3>Остави отзив</h3>
+            <form asp-controller="Products" asp-action="AddReview" asp-route-id="@Model.ProductId" method="post" class="review-form">
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <label>
+                    Оценка
+                    <select name="rating" required>
+                        <option value="">Избери...</option>
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
+                    </select>
+                </label>
+                <label>
+                    Коментар
+                    <textarea name="comment" rows="3" required></textarea>
+                </label>
+                <button type="submit" class="btn-main">Изпрати отзива</button>
+            </form>
+        </article>
+    }
+    else if (!isAdmin)
+    {
+        <p class="soft-text">Влез в профила си, за да оставиш отзив за този продукт.</p>
+    }
+
+    @if (Model.Reviews.Count == 0)
+    {
+        <p class="soft-text">Все още няма отзиви за този продукт.</p>
+    }
+    else
+    {
+        <div class="review-list">
+            @foreach (var review in Model.Reviews)
+            {
+                <article class="review-card">
+                    <div class="review-head">
+                        <strong>@review.AuthorName</strong>
+                        <span>Оценка @review.Rating</span>
+                    </div>
+                    <p>@review.Comment</p>
+                    <small>@review.CreatedOn.ToString("MMM dd, yyyy")</small>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+<section class="section-block">
+    <div class="section-head">
+        <h2>Свързани продукти</h2>
+    </div>
+    <div class="product-grid">
+        @foreach (var product in Model.RelatedProducts)
+        {
+            <partial name="_ProductCard" model="product" />
+        }
+    </div>
+</section>

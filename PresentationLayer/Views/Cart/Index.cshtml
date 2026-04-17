@@ -1,0 +1,71 @@
+@model CartPageViewModel
+@{
+    ViewData["Title"] = "Количка";
+}
+
+<section class="cart-layout">
+    <div class="cart-items-panel">
+        <h1>Твоята количка</h1>
+
+        @if (Model.RequiresLogin)
+        {
+            <div class="empty-box">
+                <p>@(Model.InfoMessage ?? "Моля, влез в профила си, за да използваш количката.")</p>
+                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="/cart" class="btn-main">Вход</a>
+                <a asp-controller="Products" asp-action="Index" class="btn-ghost">Започни пазаруване</a>
+            </div>
+        }
+        else if (Model.Items.Count == 0)
+        {
+            <div class="empty-box">
+                <p>Количката ти е празна в момента.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn-main">Започни пазаруване</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var item in Model.Items)
+            {
+                <article class="cart-item">
+                    <img src="@item.ImageUrl" alt="@item.Name" class="cart-item-image" />
+                    <div class="cart-item-info">
+                        <p class="product-category">@item.Category</p>
+                        <h3>@item.Name</h3>
+                        <p class="soft-text">€@item.UnitPrice.ToString("0.00") за брой</p>
+                    </div>
+
+                    <form asp-action="UpdateQuantity" method="post" class="cart-qty-form js-auto-cart-form">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <input type="number" name="quantity" min="1" value="@item.Quantity" class="js-cart-qty" />
+                    </form>
+
+                    <p class="cart-line-total">€@item.LineTotal.ToString("0.00")</p>
+
+                    <form asp-action="Remove" method="post">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" class="icon-pill">X</button>
+                    </form>
+                </article>
+            }
+        }
+    </div>
+
+    <aside class="summary-panel">
+        <h2>Обобщение на поръчката</h2>
+        <div class="summary-row">
+            <span>Междинна сума</span>
+            <strong>€@Model.Subtotal.ToString("0.00")</strong>
+        </div>
+        <div class="summary-row">
+            <span>Доставка</span>
+            <strong>@(Model.Shipping == 0 ? "Безплатна" : "€" + Model.Shipping.ToString("0.00"))</strong>
+        </div>
+        <div class="summary-row summary-total">
+            <span>Общо</span>
+            <strong>€@Model.Total.ToString("0.00")</strong>
+        </div>
+
+        <a asp-action="Checkout" class="btn-main wide-btn @(Model.Items.Count == 0 || Model.RequiresLogin ? "disabled-link" : null)">Към поръчка</a>
+    </aside>
+</section>
+

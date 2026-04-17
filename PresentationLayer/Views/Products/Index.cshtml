@@ -1,0 +1,114 @@
+@model ProductListPageViewModel
+@{
+    ViewData["Title"] = "Всички продукти";
+    string GenderLabel(string value) => value.ToLowerInvariant() switch
+    {
+        "women" => "Жена",
+        "men" => "Мъж",
+        "unisex" => "Унисекс",
+        "kids" => "Деца",
+        _ => value
+    };
+}
+
+<section class="products-layout">
+    <aside class="filters-panel">
+        <div class="filters-head">
+            <h2>Филтри</h2>
+            <a asp-action="Index">Изчисти</a>
+        </div>
+
+        <form method="get" asp-action="Index" class="filters-form">
+            <label class="filter-label">
+                Търсене
+                <input type="search" name="search" value="@Model.SearchQuery" placeholder="Търсене на ръчно изработени продукти..." />
+            </label>
+
+            <label class="filter-label">
+                Категория
+                <select name="category">
+                    <option value="All" selected="@(Model.Category.Equals("All", StringComparison.OrdinalIgnoreCase) ? "selected" : null)">Всички</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category" selected="@(Model.Category.Equals(category, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">@category</option>
+                    }
+                </select>
+            </label>
+
+            <label class="filter-label">
+                Пол
+                <select name="genderTag">
+                    <option value="" selected="@(string.IsNullOrWhiteSpace(Model.GenderTag) ? "selected" : null)">Всички</option>
+                    @foreach (var genderTag in Model.GenderTags)
+                    {
+                        <option value="@genderTag" selected="@(Model.GenderTag.Equals(genderTag, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">
+                            @GenderLabel(genderTag)
+                        </option>
+                    }
+                </select>
+            </label>
+
+            <label class="filter-label">
+                Размер (EU)
+                <select name="sizeTag">
+                    <option value="" selected="@(string.IsNullOrWhiteSpace(Model.SizeTag) ? "selected" : null)">Всички</option>
+                    @foreach (var sizeTag in Model.SizeTags)
+                    {
+                        <option value="@sizeTag" selected="@(Model.SizeTag.Equals(sizeTag, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">
+                            @sizeTag
+                        </option>
+                    }
+                </select>
+            </label>
+
+            <label class="filter-label">
+                Максимална цена: €<span id="maxPriceValue">@Model.MaxPrice.ToString("0")</span>
+                <input type="range" name="maxPrice" min="0" max="@Model.MaxSelectablePrice.ToString("0")" value="@Model.MaxPrice.ToString("0")" step="1" oninput="document.getElementById('maxPriceValue').textContent = this.value;" />
+            </label>
+
+            <label class="filter-label">
+                Минимален рейтинг
+                <select name="minRating">
+                    <option value="0" selected="@(Model.MinRating == 0 ? "selected" : null)">Без значение</option>
+                    <option value="3" selected="@(Model.MinRating == 3 ? "selected" : null)">3 звезди и нагоре</option>
+                    <option value="4" selected="@(Model.MinRating == 4 ? "selected" : null)">4 звезди и нагоре</option>
+                    <option value="5" selected="@(Model.MinRating == 5 ? "selected" : null)">5 звезди</option>
+                </select>
+            </label>
+
+            <button type="submit" class="btn-main">Приложи филтрите</button>
+        </form>
+    </aside>
+
+    <section class="products-content">
+        <div class="products-toolbar">
+            <div>
+                <h1>Всички продукти</h1>
+                <p>Открити продукти: @Model.ProductCount</p>
+            </div>
+
+            <form method="get" asp-action="Index" class="sort-form">
+                <input type="hidden" name="search" value="@Model.SearchQuery" />
+                <input type="hidden" name="category" value="@Model.Category" />
+                <input type="hidden" name="maxPrice" value="@Model.MaxPrice" />
+                <input type="hidden" name="minRating" value="@Model.MinRating" />
+                <input type="hidden" name="genderTag" value="@Model.GenderTag" />
+                <input type="hidden" name="sizeTag" value="@Model.SizeTag" />
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="featured" selected="@(Model.Sort == "featured" ? "selected" : null)">Подбрани</option>
+                    <option value="newest" selected="@(Model.Sort == "newest" ? "selected" : null)">Най-нови</option>
+                    <option value="rating" selected="@(Model.Sort == "rating" ? "selected" : null)">Най-високо оценени</option>
+                    <option value="price-asc" selected="@(Model.Sort == "price-asc" ? "selected" : null)">Цена: ниска към висока</option>
+                    <option value="price-desc" selected="@(Model.Sort == "price-desc" ? "selected" : null)">Цена: висока към ниска</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="product-grid">
+            @foreach (var product in Model.Products)
+            {
+                <partial name="_ProductCard" model="product" />
+            }
+        </div>
+    </section>
+</section>

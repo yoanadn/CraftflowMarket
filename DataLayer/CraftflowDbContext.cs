@@ -2,11 +2,13 @@
 using BusinessLayer.Entities.Cart;
 using BusinessLayer.Entities.Catalog;
 using BusinessLayer.Entities.Identity;
+using BusinessLayer.Entities.Moderation;
 using BusinessLayer.Entities.Orders;
 using BusinessLayer.Entities.Profiles;
 using BusinessLayer.Entities.Reviews;
 using BusinessLayer.Entities.Shops;
 using BusinessLayer.Entities.Social;
+using BusinessLayer.Entities.System;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer
@@ -26,6 +28,10 @@ namespace DataLayer
         public DbSet<FavouriteProduct> FavouriteProducts { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<BanRecord> BanRecords { get; set; }
+        public DbSet<Report> Reports { get; set; }
+        public DbSet<ModerationAction> ModerationActions { get; set; }
+        public DbSet<SystemSetting> SystemSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -115,6 +121,10 @@ namespace DataLayer
                 .WithMany()
                 .HasForeignKey(oi => oi.ProductId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Order>()
+                .Property(order => order.ShippingAmount)
+                .HasPrecision(18, 2);
         }
     }
 }

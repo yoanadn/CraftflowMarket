@@ -1,0 +1,109 @@
+﻿@model ProfileEditProductViewModel
+@{
+    ViewData["Title"] = "Редакция на продукт";
+}
+
+<section class="auth-shell">
+    <div class="auth-card">
+        <h1>Редакция на продукт</h1>
+        <p class="soft-text">Актуализирай детайлите на продукта и добави още снимки.</p>
+
+        <form asp-action="EditProduct" asp-route-productId="@Model.Id" method="post" enctype="multipart/form-data" class="auth-form">
+            <label>
+                Име на продукта
+                <input asp-for="Name" />
+                <span asp-validation-for="Name" class="field-validation-error"></span>
+            </label>
+
+            <div class="auth-grid-2">
+                <label>
+                    Категория
+                    <select asp-for="Category">
+                        <option value="">Избери категория</option>
+                        @foreach (var category in Model.AvailableCategories)
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Category" class="field-validation-error"></span>
+                </label>
+
+                <label>
+                    Цена
+                    <input asp-for="Price" type="number" min="0.01" step="0.01" />
+                    <span asp-validation-for="Price" class="field-validation-error"></span>
+                </label>
+            </div>
+
+            <label>
+                Описание
+                <textarea asp-for="Description" rows="5"></textarea>
+                <span asp-validation-for="Description" class="field-validation-error"></span>
+            </label>
+
+            <div class="auth-grid-2">
+                <label>
+                    Етикет за пол
+                    <select asp-for="GenderTag">
+                        <option value="">Не е посочено</option>
+                        <option value="women">Жени</option>
+                        <option value="men">Мъже</option>
+                        <option value="unisex">Унисекс</option>
+                        <option value="kids">Деца</option>
+                    </select>
+                </label>
+
+                <label>
+                    Етикети за размер
+                    <input asp-for="SizeTags" placeholder="EU 38, EU 39, M" />
+                    <span class="soft-text">По желание. Остави празно за продукти без размер.</span>
+                </label>
+            </div>
+
+            <label>
+                Добави още снимки
+                <div class="file-input" data-file-input>
+                    <input type="file" name="imageFiles" accept="image/*" multiple class="file-input-native" data-file-input-native />
+                    <button type="button" class="file-input-button" data-file-input-trigger>Избери файлове</button>
+                    <span class="file-input-status" data-file-input-status>Няма избрани файлове</span>
+                </div>
+            </label>
+
+            @if (Model.ExistingImages.Count > 0)
+            {
+                <div>
+                    <p class="soft-text">Текущи снимки</p>
+                    <div class="product-images-grid">
+                        @foreach (var image in Model.ExistingImages)
+                        {
+                            <label class="product-image-manage">
+                                <img src="@image.Url" alt="Снимка на продукта" class="product-image-thumb" />
+                                @if (image.Id > 0)
+                                {
+                                    <span class="product-image-remove-toggle">
+                                        <input type="checkbox" name="RemoveImageIds" value="@image.Id" @(Model.RemoveImageIds.Contains(image.Id) ? "checked" : null) />
+                                        Премахни
+                                    </span>
+                                }
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div asp-validation-summary="ModelOnly" class="field-validation-error"></div>
+
+            <div class="inline-actions">
+                <button type="submit" class="btn-main">Запази промените</button>
+                <a asp-action="Index" asp-route-tab="products" class="btn-ghost">Назад</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+

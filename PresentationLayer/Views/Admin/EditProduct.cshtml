@@ -1,0 +1,67 @@
+@using BusinessLayer.Enums
+@model AdminEditProductViewModel
+@{
+    ViewData["Title"] = "Редакция на продукт";
+    var statusOptions = Html.GetEnumSelectList<ProductStatus>()
+        .Select(item =>
+        {
+            item.Text = item.Value switch
+            {
+                "1" => "Активен",
+                "2" => "Продаден",
+                _ => item.Text
+            };
+            return item;
+        })
+        .ToList();
+}
+
+<section class="auth-shell">
+    <div class="auth-card">
+        <h1>Редакция на продукт #@Model.Id</h1>
+        <p class="soft-text">Админ панел за детайли на продукта и състояние на видимост.</p>
+
+        <form asp-action="EditProduct" asp-route-productId="@Model.Id" method="post" class="auth-form">
+            <label>
+                Име на продукта
+                <input asp-for="Name" />
+                <span asp-validation-for="Name" class="field-validation-error"></span>
+            </label>
+
+            <label>
+                Категория
+                <input asp-for="Category" />
+                <span asp-validation-for="Category" class="field-validation-error"></span>
+            </label>
+
+            <label>
+                Цена
+                <input asp-for="Price" type="number" min="1" step="0.01" />
+                <span asp-validation-for="Price" class="field-validation-error"></span>
+            </label>
+
+            <label>
+                Описание
+                <textarea asp-for="Description" rows="5"></textarea>
+                <span asp-validation-for="Description" class="field-validation-error"></span>
+            </label>
+
+            <label>
+                Статус
+                <select asp-for="Status" asp-items="statusOptions"></select>
+                <span asp-validation-for="Status" class="field-validation-error"></span>
+            </label>
+
+            <div asp-validation-summary="ModelOnly" class="field-validation-error"></div>
+
+            <div class="inline-actions">
+                <button type="submit" class="btn-main">Запази продукта</button>
+                <a asp-action="Index" class="btn-ghost">Отказ</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

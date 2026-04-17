@@ -1,0 +1,107 @@
+Using launch settings from .\PresentationLayer\Properties\launchSettings.json...
+Building...
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (20ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Migrations[20411]
+      Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (30ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+      BEGIN
+          CREATE TABLE [__EFMigrationsHistory] (
+              [MigrationId] nvarchar(150) NOT NULL,
+              [ProductVersion] nvarchar(32) NOT NULL,
+              CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+          );
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20405]
+      No migrations were applied. The database is already up to date.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[BanRecords]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [BanRecords](
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [UserId] INT NOT NULL,
+        [BannedUntil] DATETIME2 NOT NULL,
+        [CreatedOn] DATETIME2 NOT NULL,
+        [ModifiedOn] DATETIME2 NULL
+    );
+END;
+
+IF OBJECT_ID(N'[Reports]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [Reports](
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [TargetType] INT NOT NULL,
+        [TargetId] INT NOT NULL,
+        [Status] INT NOT NULL,
+        [CreatedOn] DATETIME2 NOT NULL,
+        [ModifiedOn] DATETIME2 NULL
+    );
+END;
+
+IF OBJECT_ID(N'[ModerationActions]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [ModerationActions](
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [ReportId] INT NOT NULL,
+        [Action] NVARCHAR(MAX) NOT NULL,
+        [CreatedOn] DATETIME2 NOT NULL,
+        [ModifiedOn] DATETIME2 NULL
+    );
+END;
+
+IF OBJECT_ID(N'[SystemSettings]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [SystemSettings](
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [Key] NVARCHAR(MAX) NOT NULL,
+        [Value] NVARCHAR(MAX) NOT NULL,
+        [CreatedOn] DATETIME2 NOT NULL,
+        [ModifiedOn] DATETIME2 NULL
+    );
+END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[CreatedOn], [u].[Email], [u].[ModifiedOn], [u].[PasswordHash], [u].[Role], [u].[Username], [p].[Id], [p].[Bio], [p].[CreatedOn], [p].[FirstName], [p].[LastName], [p].[ModifiedOn], [p].[PhoneNumber], [p].[ProfileImageUrl], [p].[UserId]
+      FROM [Users] AS [u]
+      LEFT JOIN [Profiles] AS [p] ON [u].[Id] = [p].[UserId]
+      WHERE [u].[Role] = N'Admin'
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (20ms) [Parameters=[@p1='?' (DbType = Int32), @p0='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Users] SET [ModifiedOn] = @p0
+      OUTPUT 1
+      WHERE [Id] = @p1;
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5115
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Users\Yoana\source\repos\Diplomen proekt\Craftflow_Market\PresentationLayer

@@ -1,0 +1,218 @@
+@using BusinessLayer.Enums
+@model AdminUserDetailsViewModel
+@{
+    ViewData["Title"] = "Детайли за потребителя";
+    var fullName = $"{Model.FirstName} {Model.LastName}".Trim();
+    if (string.IsNullOrWhiteSpace(fullName))
+    {
+        fullName = Model.Username;
+    }
+
+    string GetOrderStatusClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Delivered => "status-success",
+        OrderStatus.Cancelled => "status-danger",
+        OrderStatus.Processing => "status-info",
+        OrderStatus.Sent => "status-muted",
+        _ => "status-warning"
+    };
+
+    string GetOrderStatusLabel(OrderStatus status) => status switch
+    {
+        OrderStatus.Pending => "Чакаща",
+        OrderStatus.Processing => "Обработва се",
+        OrderStatus.Sent => "Изпратена",
+        OrderStatus.Delivered => "Доставена",
+        OrderStatus.Cancelled => "Отказана",
+        _ => status.ToString()
+    };
+
+    string GetRoleLabel(string role) => string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase)
+        ? "Админ"
+        : "Потребител";
+
+    string GetProductStatusLabel(string rawStatus)
+    {
+        if (Enum.TryParse<ProductStatus>(rawStatus, out var parsed))
+        {
+            return parsed switch
+            {
+                ProductStatus.Active => "Активен",
+                ProductStatus.Sold => "Продаден",
+                _ => rawStatus
+            };
+        }
+
+        return rawStatus;
+    }
+}
+
+<section class="profile-header-card section-block">
+    <div class="profile-avatar profile-avatar-initials" aria-label="@($"Аватар с инициали за {fullName}")">@Model.AvatarInitials</div>
+    <div>
+        <h2>@fullName</h2>
+        <p>@("@"+Model.Username)</p>
+        <div class="profile-meta">
+            <span>@Model.Email</span>
+            @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+            {
+                <span>@Model.PhoneNumber</span>
+            }
+            <span>Роля: @GetRoleLabel(Model.Role)</span>
+            <span>Създаден: @Model.CreatedOn.ToString("MMM dd, yyyy")</span>
+            <span>Статус: @(Model.IsBanned && Model.BannedUntil is not null ? $"Блокиран до {Model.BannedUntil.Value.ToLocalTime():MMM dd, yyyy HH:mm}" : "Активен")</span>
+            <span>Парола: <code>@Model.StoredPassword</code></span>
+        </div>
+    </div>
+    <div class="profile-header-actions">
+        <a asp-action="Index" class="btn-ghost">Назад към таблото</a>
+    </div>
+</section>
+
+<section class="admin-stats-grid section-block user-details-stats">
+    <a href="#user-orders" class="admin-stat-card admin-stat-link">
+        <p>Поръчки</p>
+        <strong>@Model.OrdersCount</strong>
+    </a>
+    <a href="#user-reviews" class="admin-stat-card admin-stat-link">
+        <p>Отзиви</p>
+        <strong>@Model.ReviewsCount</strong>
+    </a>
+    <a href="#user-products" class="admin-stat-card admin-stat-link">
+        <p>Продукти</p>
+        <strong>@Model.ProductsCount</strong>
+    </a>
+</section>
+
+<section id="user-orders" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Поръчки на потребителя</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Дата</th>
+                    <th>Статус</th>
+                    <th>Артикули</th>
+                    <th>Плащане</th>
+                    <th>Адрес</th>
+                    <th>Общо</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Orders.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7">Няма поръчки от този потребител.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var order in Model.Orders)
+                    {
+                        <tr>
+                            <td>#@order.Id</td>
+                            <td>@order.CreatedOn.ToString("MMM dd, yyyy HH:mm")</td>
+                            <td><span class="status-badge @GetOrderStatusClass(order.Status)">@GetOrderStatusLabel(order.Status)</span></td>
+                            <td>
+                                <strong>@order.ItemsCount</strong>
+                                <p class="soft-text">@order.ItemsSummary</p>
+                            </td>
+                            <td>@order.PaymentMethod</td>
+                            <td>@order.AddressSummary</td>
+                            <td>€@order.Total.ToString("0.00")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="user-reviews" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Отзиви на потребителя</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Продукт</th>
+                    <th>Оценка</th>
+                    <th>Коментар</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Reviews.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4">Няма отзиви от този потребител.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <tr>
+                            <td>@review.CreatedOn.ToString("MMM dd, yyyy HH:mm")</td>
+                            <td>
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@review.ProductId">@review.ProductName</a>
+                            </td>
+                            <td>@review.Rating / 5</td>
+                            <td>@review.Comment</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="user-products" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Продукти на потребителя</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Име</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                    <th>Създаден</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Products.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7">Няма качени продукти от този потребител.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>@product.Id</td>
+                            <td>@product.Name</td>
+                            <td>@product.Category</td>
+                            <td>€@product.Price.ToString("0.00")</td>
+                            <td>@GetProductStatusLabel(product.Status)</td>
+                            <td>@product.CreatedOn.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <a asp-action="EditProduct" asp-route-productId="@product.Id" class="btn-ghost btn-small">Редактирай</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

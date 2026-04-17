@@ -1,0 +1,433 @@
+@using BusinessLayer.Enums
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Админ табло";
+    ViewData["HideFavouriteButton"] = true;
+    var categoriesRaw = string.Join(", ", Model.Categories);
+    var orderStatuses = new[]
+    {
+        OrderStatus.Pending,
+        OrderStatus.Processing,
+        OrderStatus.Sent,
+        OrderStatus.Delivered,
+        OrderStatus.Cancelled
+    };
+
+    string GetOrderStatusClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Delivered => "status-success",
+        OrderStatus.Cancelled => "status-danger",
+        OrderStatus.Processing => "status-info",
+        OrderStatus.Sent => "status-muted",
+        _ => "status-warning"
+    };
+
+    string GetOrderStatusLabel(OrderStatus status) => status switch
+    {
+        OrderStatus.Pending => "Чакаща",
+        OrderStatus.Processing => "Обработва се",
+        OrderStatus.Sent => "Изпратена",
+        OrderStatus.Delivered => "Доставена",
+        OrderStatus.Cancelled => "Отказана",
+        _ => status.ToString()
+    };
+
+    string GetProductStatusLabel(string rawStatus)
+    {
+        if (Enum.TryParse<ProductStatus>(rawStatus, out var parsed))
+        {
+            return parsed switch
+            {
+                ProductStatus.Active => "Активен",
+                ProductStatus.Sold => "Продаден",
+                _ => rawStatus
+            };
+        }
+
+        return rawStatus;
+    }
+
+    string GetRoleLabel(string role) => string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase)
+        ? "Админ"
+        : "Потребител";
+
+    string GetReportStatusLabel(ReportStatus status) => status switch
+    {
+        ReportStatus.Pending => "Чакащ",
+        ReportStatus.Reviewed => "Прегледан",
+        ReportStatus.Resolved => "Решен",
+        ReportStatus.Rejected => "Отхвърлен",
+        _ => status.ToString()
+    };
+
+    string GetReportTargetLabel(ReportTargetType type) => type switch
+    {
+        ReportTargetType.Product => "Продукт",
+        ReportTargetType.Review => "Отзив",
+        ReportTargetType.User => "Потребител",
+        ReportTargetType.Shop => "Магазин",
+        _ => type.ToString()
+    };
+}
+
+<section class="admin-hero">
+    <h1>Админ табло</h1>
+    <p>Контролен панел за потребители, продукти, модерация и системни правила.</p>
+</section>
+
+<section class="admin-stats-grid">
+    <a href="#users-management" class="admin-stat-card admin-stat-link">
+        <p>Общо потребители</p>
+        <strong>@Model.TotalUsers</strong>
+    </a>
+    <a href="#products-management" class="admin-stat-card admin-stat-link">
+        <p>Общо продукти</p>
+        <strong>@Model.TotalProducts</strong>
+    </a>
+    <a href="#orders-management" class="admin-stat-card admin-stat-link">
+        <p>Общо поръчки</p>
+        <strong>@Model.TotalOrders</strong>
+    </a>
+    <a href="#reviews-management" class="admin-stat-card admin-stat-link">
+        <p>Общо отзиви</p>
+        <strong>@Model.TotalReviews</strong>
+    </a>
+    <a href="#orders-management" class="admin-stat-card admin-stat-link">
+        <p>Очакван приход</p>
+        <strong>€@Model.EstimatedRevenue.ToString("0.00")</strong>
+    </a>
+</section>
+
+<section id="orders-management" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Управление на поръчки</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Клиент</th>
+                    <th>Адрес</th>
+                    <th>Плащане</th>
+                    <th>Артикули</th>
+                    <th>Общо</th>
+                    <th>Статус</th>
+                    <th>Обновяване</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Orders.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8">Все още няма поръчки.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var order in Model.Orders)
+                    {
+                        <tr>
+                            <td>#@order.Id</td>
+                            <td>
+                                <strong>@order.CustomerName</strong>
+                                <p class="soft-text">@order.CustomerEmail</p>
+                                <p class="soft-text">@order.CreatedOn.ToString("MMM dd, yyyy HH:mm")</p>
+                            </td>
+                            <td>@order.AddressSummary</td>
+                            <td>@order.PaymentMethod</td>
+                            <td>@order.ItemsCount</td>
+                            <td>€@order.Total.ToString("0.00")</td>
+                            <td>
+                                <span class="status-badge @GetOrderStatusClass(order.Status)">@GetOrderStatusLabel(order.Status)</span>
+                            </td>
+                            <td>
+                                <form asp-action="UpdateOrderStatus" method="post" class="inline-grid-form order-status-form">
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    <select name="status">
+                                        @foreach (var status in orderStatuses)
+                                        {
+                                            <option value="@status" selected="@(order.Status == status ? "selected" : null)">@GetOrderStatusLabel(status)</option>
+                                        }
+                                    </select>
+                                    <button type="submit" class="btn-ghost btn-small">Запази</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="users-management" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Управление на потребители</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Роля</th>
+                    <th>Статус</th>
+                    <th>Създаден</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    var isAdminUser = string.Equals(user.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>@GetRoleLabel(user.Role)</td>
+                        <td>
+                            @if (user.IsBanned && user.BannedUntil is not null)
+                            {
+                                <span class="status-badge status-warning">Блокиран до @user.BannedUntil.Value.ToLocalTime().ToString("MMM dd, yyyy HH:mm")</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-success">Активен</span>
+                            }
+                        </td>
+                        <td>@user.CreatedOn.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <div class="admin-action-stack">
+                                <a asp-action="UserDetails" asp-route-userId="@user.Id" class="btn-ghost btn-small">Виж профила</a>
+
+                                @if (!isAdminUser)
+                                {
+                                    @if (user.IsBanned)
+                                    {
+                                        <form asp-action="UnbanUser" method="post">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn-ghost btn-small">Разблокирай</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="BanUser" method="post" class="inline-grid-form">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <input type="number" name="banDays" min="1" placeholder="Дни блокиране (по подразбиране 7)" title="Продължителност на блокиране в дни" aria-label="Продължителност на блокиране в дни" />
+                                            <input type="text" name="reason" placeholder="Причина (по избор)" />
+                                            <button type="submit" class="btn-ghost btn-small">Блокирай</button>
+                                        </form>
+                                    }
+
+                                    <form asp-action="DeleteUser" method="post">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <button type="submit" class="btn-danger btn-small">Изтрий</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="products-management" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Управление на продукти</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Продукт</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                    <th>Магазин</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td>@product.Id</td>
+                        <td>@product.Name</td>
+                        <td>@product.Category</td>
+                        <td>€@product.Price.ToString("0.00")</td>
+                        <td>@GetProductStatusLabel(product.Status)</td>
+                        <td>@product.ShopName</td>
+                        <td>
+                            <div class="admin-action-stack">
+                                <a asp-action="EditProduct" asp-route-productId="@product.Id" class="btn-ghost btn-small">Редактирай</a>
+
+                                <form asp-action="DeleteProduct" method="post">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <button type="submit" class="btn-danger btn-small">Изтрий</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="reviews-management" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Модерация на коментари</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Продукт</th>
+                    <th>Потребител</th>
+                    <th>Оценка</th>
+                    <th>Коментар</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Model.Reviews)
+                {
+                    <tr>
+                        <td>@review.CreatedOn.ToString("MMM dd, yyyy")</td>
+                        <td>@review.ProductName</td>
+                        <td>@review.Username</td>
+                        <td>@review.Rating</td>
+                        <td>@review.Comment</td>
+                        <td>
+                            <form asp-action="DeleteReview" method="post">
+                                <input type="hidden" name="reviewId" value="@review.Id" />
+                                <button type="submit" class="btn-danger btn-small">Изтрий</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-head">
+        <h2>Център за сигнали</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Създаден</th>
+                    <th>Цел</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Reports.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5">Все още няма сигнали.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var report in Model.Reports)
+                    {
+                        <tr>
+                            <td>#@report.Id</td>
+                            <td>@report.CreatedOn.ToString("MMM dd, yyyy HH:mm")</td>
+                            <td>
+                                <strong>@GetReportTargetLabel(report.TargetType)</strong>
+                                <p class="soft-text">@report.TargetSummary</p>
+                            </td>
+                            <td>@GetReportStatusLabel(report.Status)</td>
+                            <td>
+                                <div class="admin-action-stack">
+                                    <form asp-action="ResolveReport" method="post" class="inline-grid-form">
+                                        <input type="hidden" name="reportId" value="@report.Id" />
+                                        <input type="text" name="action" placeholder="Бележка за действие" />
+                                        <button type="submit" class="btn-ghost btn-small">Реши</button>
+                                    </form>
+
+                                    <form asp-action="RejectReport" method="post" class="inline-grid-form">
+                                        <input type="hidden" name="reportId" value="@report.Id" />
+                                        <input type="text" name="reason" placeholder="Причина" />
+                                        <button type="submit" class="btn-danger btn-small">Отхвърли</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="settings-management" class="section-block admin-anchor-target">
+    <div class="section-head">
+        <h2>Системни настройки</h2>
+    </div>
+    <form asp-action="UpdateSettings" method="post" class="admin-settings-form">
+        <label>
+            Категории (разделени със запетая или нов ред)
+            <textarea name="CategoriesRaw" rows="3">@categoriesRaw</textarea>
+        </label>
+        <button type="submit" class="btn-main">Запази настройките</button>
+    </form>
+
+    <form asp-action="ResetMarketplaceData" method="post" class="admin-settings-form danger-zone-form">
+        <button type="submit"
+                class="btn-danger"
+                onclick="return confirm('Сигурен/на ли си? Това ще изтрие всички данни и ще остави само администраторските акаунти.');">
+            Изтрий всички данни (без admin)
+        </button>
+    </form>
+</section>
+
+<section class="section-block">
+    <div class="section-head">
+        <h2>Журнал на модераторските действия</h2>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>ID на сигнал</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Actions.Count == 0)
+                {
+                    <tr>
+                        <td colspan="3">Все още няма записани модераторски действия.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var action in Model.Actions)
+                    {
+                        <tr>
+                            <td>@action.CreatedOn.ToString("MMM dd, yyyy HH:mm")</td>
+                            <td>@(action.ReportId <= 0 ? "-" : $"#{action.ReportId}")</td>
+                            <td>@action.Action</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+

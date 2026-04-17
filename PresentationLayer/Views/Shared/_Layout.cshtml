@@ -1,50 +1,127 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@inject PresentationLayer.Infrastructure.IUserSessionService UserSession
+@inject PresentationLayer.Services.IMarketplaceService MarketplaceService
+@{
+    var currentUser = await UserSession.GetCurrentUserAsync();
+    var isAuthenticated = currentUser is not null;
+    var isAdmin = UserSession.IsAdmin;
+    var navigationCategories = !isAdmin
+        ? await MarketplaceService.GetNavigationCategoriesAsync()
+        : Array.Empty<string>();
+    var cartItemsCount = (!isAdmin && isAuthenticated && UserSession.UserId.HasValue)
+        ? await MarketplaceService.GetCartItemsCountAsync(UserSession.UserId.Value)
+        : 0;
+}
+<!DOCTYPE html>
+<html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PresentationLayer</title>
+    <title>@ViewData["Title"] - Craftflow Market</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PresentationLayer.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PresentationLayer</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <header class="site-header">
+        <div class="header-top container-narrow">
+            <nav class="quick-nav">
+                <a asp-controller="Home" asp-action="Index">Начало</a>
+                <a asp-controller="Home" asp-action="Sizes">Размери</a>
+                @if (isAdmin)
+                {
+                    <a asp-controller="Admin" asp-action="Index">Админ панел</a>
+                }
+            </nav>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - PresentationLayer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="top-links">
+                @if (!isAuthenticated)
+                {
+                    <a asp-controller="Account" asp-action="Login">Вход</a>
+                    <span>|</span>
+                    <a asp-controller="Account" asp-action="Register">Регистрация</a>
+                }
+                else
+                {
+                    <a asp-controller="Profile" asp-action="Index">Профил</a>
+                    <span>|</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline-form">
+                        <button type="submit" class="as-link">Изход</button>
+                    </form>
+                }
+            </div>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+        <div class="header-main container-narrow">
+            <a asp-controller="Home" asp-action="Index" class="brand">
+                <span class="brand-badge">C</span>
+                <span>Craftflow Market</span>
+            </a>
+
+            <form asp-controller="Products" asp-action="Index" method="get" class="header-search">
+                <input type="search" name="search" placeholder="Търсене на ръчно изработени продукти..." />
+            </form>
+
+            <div class="header-icons">
+                @if (!isAdmin)
+                {
+                    <a asp-controller="Favorites" asp-action="Index" aria-label="Любими">
+                        <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                            <path d="M12 21s-6.9-4.3-10-8.1C-0.5 9.8 1 5.2 4.9 4.2 7.3 3.6 9.8 4.5 12 7c2.2-2.5 4.7-3.4 7.1-2.8 3.9 1 5.4 5.6 2.9 8.7C18.9 16.7 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a asp-controller="Cart" asp-action="Index" aria-label="Количка" class="header-icon-link cart-link">
+                        <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                            <circle cx="9" cy="20" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <circle cx="17" cy="20" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M2 3h2.5l2.6 11h10.6l2.3-8.2H6.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        @if (cartItemsCount > 0)
+                        {
+                            <span class="cart-count-badge">@cartItemsCount</span>
+                        }
+                    </a>
+                }
+                <a asp-controller="@(isAuthenticated ? "Profile" : "Account")" asp-action="@(isAuthenticated ? "Index" : "Login")" aria-label="Профил">
+                    <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                        <circle cx="12" cy="8.1" r="3.3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        <path d="M5 20c1.3-3.2 3.7-4.8 7-4.8s5.7 1.6 7 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        @if (!isAdmin)
+        {
+            <nav class="category-nav container-narrow">
+                <a asp-controller="Products" asp-action="Index">Всички продукти</a>
+                @foreach (var category in navigationCategories)
+                {
+                    <a asp-controller="Products" asp-action="Index" asp-route-category="@category">@category</a>
+                }
+            </nav>
+        }
+    </header>
+
+    <main class="page-shell container-narrow">
+        @if (TempData["Success"] is string successMessage)
+        {
+            <div class="flash success">@successMessage</div>
+        }
+
+        @if (TempData["Error"] is string errorMessage)
+        {
+            <div class="flash error">@errorMessage</div>
+        }
+
+        @RenderBody()
+    </main>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
