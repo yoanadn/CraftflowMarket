@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F597D1FB-DA11-4F43-82CC-78ED9A2E07A2}|TestingLayer\\TestingLayer.csproj|c:\\users\\yoana\\source\\repos\\diplomen proekt\\craftflow_market\\testinglayer\\craftflowdbcontexttests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F597D1FB-DA11-4F43-82CC-78ED9A2E07A2}|TestingLayer\\TestingLayer.csproj|solutionrelative:testinglayer\\craftflowdbcontexttests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F597D1FB-DA11-4F43-82CC-78ED9A2E07A2}|TestingLayer\\TestingLayer.csproj|c:\\users\\yoana\\source\\repos\\diplomen proekt\\craftflow_market\\testinglayer\\accountservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F597D1FB-DA11-4F43-82CC-78ED9A2E07A2}|TestingLayer\\TestingLayer.csproj|solutionrelative:testinglayer\\accountservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D6A207AC-240C-46F7-9638-5FB00C8F0143}|ServiceLayer\\ServiceLayer.csproj|c:\\users\\yoana\\source\\repos\\diplomen proekt\\craftflow_market\\servicelayer\\reviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D6A207AC-240C-46F7-9638-5FB00C8F0143}|ServiceLayer\\ServiceLayer.csproj|solutionrelative:servicelayer\\reviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -330,7 +338,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -338,7 +346,33 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CraftflowDbContextTests.cs",
+              "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\TestingLayer\\CraftflowDbContextTests.cs",
+              "RelativeDocumentMoniker": "TestingLayer\\CraftflowDbContextTests.cs",
+              "ToolTip": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\TestingLayer\\CraftflowDbContextTests.cs",
+              "RelativeToolTip": "TestingLayer\\CraftflowDbContextTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-21T07:12:04.285Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "AccountServiceTests.cs",
+              "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\TestingLayer\\AccountServiceTests.cs",
+              "RelativeDocumentMoniker": "TestingLayer\\AccountServiceTests.cs",
+              "ToolTip": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\TestingLayer\\AccountServiceTests.cs",
+              "RelativeToolTip": "TestingLayer\\AccountServiceTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-21T07:11:54.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "IAccountService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\Services\\IAccountService.cs",
               "RelativeDocumentMoniker": "PresentationLayer\\Services\\IAccountService.cs",
@@ -350,7 +384,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "AdminSchemaInitializer.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\Services\\AdminSchemaInitializer.cs",
               "RelativeDocumentMoniker": "PresentationLayer\\Services\\AdminSchemaInitializer.cs",
@@ -362,7 +396,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\Views\\Profile\\Index.cshtml",
               "RelativeDocumentMoniker": "PresentationLayer\\Views\\Profile\\Index.cshtml",
@@ -374,7 +408,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "UserDetails.cshtml",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\Views\\Admin\\UserDetails.cshtml",
               "RelativeDocumentMoniker": "PresentationLayer\\Views\\Admin\\UserDetails.cshtml",
@@ -386,7 +420,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\Views\\Admin\\Index.cshtml",
               "RelativeDocumentMoniker": "PresentationLayer\\Views\\Admin\\Index.cshtml",
@@ -398,7 +432,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "PresentationLayer\\Views\\Account\\Login.cshtml",
@@ -410,7 +444,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "ReviewRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\Repositories\\ReviewRepository.cs",
               "RelativeDocumentMoniker": "DataLayer\\Repositories\\ReviewRepository.cs",
@@ -422,7 +456,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "IReviewRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Repositories\\IReviewRepository.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Repositories\\IReviewRepository.cs",
@@ -434,7 +468,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "AdminService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\ServiceLayer\\AdminService.cs",
               "RelativeDocumentMoniker": "ServiceLayer\\AdminService.cs",
@@ -446,7 +480,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ReviewService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\ServiceLayer\\ReviewService.cs",
               "RelativeDocumentMoniker": "ServiceLayer\\ReviewService.cs",
@@ -459,7 +493,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "OrderService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\ServiceLayer\\OrderService.cs",
               "RelativeDocumentMoniker": "ServiceLayer\\OrderService.cs",
@@ -471,7 +505,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "ShopService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\ServiceLayer\\ShopService.cs",
               "RelativeDocumentMoniker": "ServiceLayer\\ShopService.cs",
@@ -483,7 +517,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "ProductService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\ServiceLayer\\ProductService.cs",
               "RelativeDocumentMoniker": "ServiceLayer\\ProductService.cs",
@@ -495,7 +529,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 81,
               "Title": "20260318160450_InitialCreate.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\Migrations\\20260318160450_InitialCreate.cs",
               "RelativeDocumentMoniker": "DataLayer\\Migrations\\20260318160450_InitialCreate.cs",
@@ -507,7 +541,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\Program.cs",
               "RelativeDocumentMoniker": "PresentationLayer\\Program.cs",
@@ -519,7 +553,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\PresentationLayer\\appsettings.json",
               "RelativeDocumentMoniker": "PresentationLayer\\appsettings.json",
@@ -531,7 +565,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "UnitOfWork.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\Repositories\\UnitOfWork.cs",
               "RelativeDocumentMoniker": "DataLayer\\Repositories\\UnitOfWork.cs",
@@ -543,7 +577,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "OrderRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\Repositories\\OrderRepository.cs",
               "RelativeDocumentMoniker": "DataLayer\\Repositories\\OrderRepository.cs",
@@ -555,7 +589,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "ShopRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\Repositories\\ShopRepository.cs",
               "RelativeDocumentMoniker": "DataLayer\\Repositories\\ShopRepository.cs",
@@ -567,7 +601,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "ProductRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\Repositories\\ProductRepository.cs",
               "RelativeDocumentMoniker": "DataLayer\\Repositories\\ProductRepository.cs",
@@ -579,7 +613,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "GenericRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\Repositories\\GenericRepository.cs",
               "RelativeDocumentMoniker": "DataLayer\\Repositories\\GenericRepository.cs",
@@ -591,7 +625,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "CraftflowDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\DataLayer\\CraftflowDbContext.cs",
               "RelativeDocumentMoniker": "DataLayer\\CraftflowDbContext.cs",
@@ -603,7 +637,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 77,
               "Title": "AdminUserDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Admin\\AdminUserDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Admin\\AdminUserDTO.cs",
@@ -615,7 +649,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 70,
               "Title": "ReviewDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Reviews\\ReviewDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Reviews\\ReviewDTO.cs",
@@ -627,7 +661,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 71,
               "Title": "ReviewCreateDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Reviews\\ReviewCreateDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Reviews\\ReviewCreateDTO.cs",
@@ -639,7 +673,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 75,
               "Title": "OrderSummaryDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Orders\\OrderSummaryDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Orders\\OrderSummaryDTO.cs",
@@ -651,7 +685,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 76,
               "Title": "OrderCreateDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Orders\\OrderCreateDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Orders\\OrderCreateDTO.cs",
@@ -663,7 +697,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 72,
               "Title": "ProductListDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Products\\ProductListDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Products\\ProductListDTO.cs",
@@ -675,7 +709,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 73,
               "Title": "ProductDetailsDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Products\\ProductDetailsDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Products\\ProductDetailsDTO.cs",
@@ -687,7 +721,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 74,
               "Title": "ProductCreateDTO.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\DTOs\\Products\\ProductCreateDTO.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\DTOs\\Products\\ProductCreateDTO.cs",
@@ -699,7 +733,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "IAdminService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Services\\IAdminService.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Services\\IAdminService.cs",
@@ -711,7 +745,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "IReviewService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Services\\IReviewService.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Services\\IReviewService.cs",
@@ -723,7 +757,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "IOrderService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Services\\IOrderService.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Services\\IOrderService.cs",
@@ -735,7 +769,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "ICartService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Services\\ICartService.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Services\\ICartService.cs",
@@ -747,7 +781,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "IShopService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Services\\IShopService.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Services\\IShopService.cs",
@@ -759,7 +793,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "IProductService.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Services\\IProductService.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Services\\IProductService.cs",
@@ -771,7 +805,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "IOrderRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Repositories\\IOrderRepository.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Repositories\\IOrderRepository.cs",
@@ -783,7 +817,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "IShopRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Repositories\\IShopRepository.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Repositories\\IShopRepository.cs",
@@ -795,7 +829,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "IProductRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Repositories\\IProductRepository.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Repositories\\IProductRepository.cs",
@@ -807,7 +841,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "IGenericRepository.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Interfaces\\Repositories\\IGenericRepository.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Interfaces\\Repositories\\IGenericRepository.cs",
@@ -819,7 +853,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 40,
               "Title": "SystemSetting.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\System\\SystemSetting.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\System\\SystemSetting.cs",
@@ -831,7 +865,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 57,
               "Title": "BanRecord.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Moderation\\BanRecord.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Moderation\\BanRecord.cs",
@@ -843,7 +877,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 56,
               "Title": "ModerationAction.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Moderation\\ModerationAction.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Moderation\\ModerationAction.cs",
@@ -855,7 +889,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 55,
               "Title": "Report.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Moderation\\Report.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Moderation\\Report.cs",
@@ -867,7 +901,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 46,
               "Title": "ShippingRateRule.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Shipping\\ShippingRateRule.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Shipping\\ShippingRateRule.cs",
@@ -879,7 +913,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 48,
               "Title": "ShippingOption.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Shipping\\ShippingOption.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Shipping\\ShippingOption.cs",
@@ -891,7 +925,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 47,
               "Title": "ShippingProfile.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Shipping\\ShippingProfile.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Shipping\\ShippingProfile.cs",
@@ -903,7 +937,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 69,
               "Title": "Address.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Addresses\\Address.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Addresses\\Address.cs",
@@ -915,7 +949,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 51,
               "Title": "Shipment.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Orders\\Shipment.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Orders\\Shipment.cs",
@@ -927,7 +961,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 52,
               "Title": "Payment.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Orders\\Payment.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Orders\\Payment.cs",
@@ -939,7 +973,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 53,
               "Title": "OrderItem.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Orders\\OrderItem.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Orders\\OrderItem.cs",
@@ -951,7 +985,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 54,
               "Title": "Order.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Orders\\Order.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Orders\\Order.cs",
@@ -963,7 +997,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 67,
               "Title": "CartItem.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Cart\\CartItem.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Cart\\CartItem.cs",
@@ -975,7 +1009,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 68,
               "Title": "Cart.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Cart\\Cart.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Cart\\Cart.cs",
@@ -987,7 +1021,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 41,
               "Title": "FollowShop.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Social\\FollowShop.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Social\\FollowShop.cs",
@@ -999,7 +1033,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 42,
               "Title": "FavouriteShop.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Social\\FavouriteShop.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Social\\FavouriteShop.cs",
@@ -1011,7 +1045,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 43,
               "Title": "FavouriteProduct.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Social\\FavouriteProduct.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Social\\FavouriteProduct.cs",
@@ -1023,7 +1057,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 49,
               "Title": "Review.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Reviews\\Review.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Reviews\\Review.cs",
@@ -1035,7 +1069,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 61,
               "Title": "ProductVariation.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Catalog\\ProductVariation.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Catalog\\ProductVariation.cs",
@@ -1047,7 +1081,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 64,
               "Title": "ProductAttribute.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Catalog\\ProductAttribute.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Catalog\\ProductAttribute.cs",
@@ -1059,7 +1093,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 62,
               "Title": "ProductTag.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Catalog\\ProductTag.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Catalog\\ProductTag.cs",
@@ -1071,7 +1105,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 60,
               "Title": "Tag.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Catalog\\Tag.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Catalog\\Tag.cs",
@@ -1083,7 +1117,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 66,
               "Title": "Category.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Catalog\\Category.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Catalog\\Category.cs",
@@ -1095,7 +1129,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 63,
               "Title": "ProductImage.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Catalog\\ProductImage.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Catalog\\ProductImage.cs",
@@ -1107,7 +1141,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 65,
               "Title": "Product.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Catalog\\Product.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Catalog\\Product.cs",
@@ -1119,7 +1153,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 44,
               "Title": "ShopPolicy.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Shops\\ShopPolicy.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Shops\\ShopPolicy.cs",
@@ -1131,7 +1165,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 45,
               "Title": "Shop.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Shops\\Shop.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Shops\\Shop.cs",
@@ -1143,7 +1177,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 50,
               "Title": "UserProfile.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Profiles\\UserProfile.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Profiles\\UserProfile.cs",
@@ -1155,7 +1189,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 59,
               "Title": "ApplicationRole.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Identity\\ApplicationRole.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Identity\\ApplicationRole.cs",
@@ -1167,7 +1201,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 58,
               "Title": "ApplicationUser.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Entities\\Identity\\ApplicationUser.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Entities\\Identity\\ApplicationUser.cs",
@@ -1179,7 +1213,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "ReportTargetType.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Enums\\ReportTargetType.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Enums\\ReportTargetType.cs",
@@ -1191,7 +1225,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "ReportStatus.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Enums\\ReportStatus.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Enums\\ReportStatus.cs",
@@ -1203,7 +1237,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "ShipmentStatus.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Enums\\ShipmentStatus.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Enums\\ShipmentStatus.cs",
@@ -1215,7 +1249,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 38,
               "Title": "PaymentStatus.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Enums\\PaymentStatus.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Enums\\PaymentStatus.cs",
@@ -1227,7 +1261,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 39,
               "Title": "OrderStatus.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Enums\\OrderStatus.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Enums\\OrderStatus.cs",
@@ -1239,7 +1273,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 37,
               "Title": "ProductStatus.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Enums\\ProductStatus.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Enums\\ProductStatus.cs",
@@ -1251,7 +1285,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "UserRole.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Enums\\UserRole.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Enums\\UserRole.cs",
@@ -1263,7 +1297,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 79,
               "Title": "Money.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Common\\Money.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Common\\Money.cs",
@@ -1275,7 +1309,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 78,
               "Title": "SoftDeletableEntity.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Common\\SoftDeletableEntity.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Common\\SoftDeletableEntity.cs",
@@ -1287,7 +1321,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 80,
               "Title": "BaseEntity.cs",
               "DocumentMoniker": "C:\\Users\\Yoana\\source\\repos\\Diplomen proekt\\Craftflow_Market\\BusinessLayer\\Common\\BaseEntity.cs",
               "RelativeDocumentMoniker": "BusinessLayer\\Common\\BaseEntity.cs",
