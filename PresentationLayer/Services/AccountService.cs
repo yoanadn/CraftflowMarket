@@ -2,6 +2,7 @@ using BusinessLayer.Entities.Identity;
 using BusinessLayer.Entities.Profiles;
 using DataLayer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PresentationLayer.ViewModels;
 using PresentationLayer.ViewModels.Auth;
@@ -16,10 +17,12 @@ public class AccountService : IAccountService
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     private readonly CraftflowDbContext context;
+    private readonly IPasswordHasher<ApplicationUser> passwordHasher;
 
-    public AccountService(CraftflowDbContext context)
+    public AccountService(CraftflowDbContext context, IPasswordHasher<ApplicationUser> passwordHasher)
     {
         this.context = context;
+        this.passwordHasher = passwordHasher;
     }
 
     public async Task<(bool Success, string? Error, ApplicationUser? User)> LoginAsync(LoginViewModel model)
@@ -32,9 +35,20 @@ public class AccountService : IAccountService
                 item.Username == identifier
                 || item.Email == identifier);
 
-        if (user is null || !string.Equals(user.PasswordHash, model.Password, StringComparison.Ordinal))
+        if (user is null)
         {
-            return (false, "Невалидни username/имейл или парола.", null);
+            return (false, "Невалидно потребителско име/имейл или парола.", null);
+        }
+
+        var passwordVerificationResult = IsIdentityPasswordHash(user.PasswordHash)
+            ? passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password)
+            : string.Equals(user.PasswordHash, model.Password, StringComparison.Ordinal)
+                ? PasswordVerificationResult.SuccessRehashNeeded
+                : PasswordVerificationResult.Failed;
+
+        if (passwordVerificationResult == PasswordVerificationResult.Failed)
+        {
+            return (false, "Невалидно потребителско име/имейл или парола.", null);
         }
 
         var activeBan = await context.BanRecords
@@ -46,6 +60,13 @@ public class AccountService : IAccountService
         if (activeBan is not null && activeBan.BannedUntil > DateTime.UtcNow)
         {
             return (false, $"Този акаунт е блокиран до {activeBan.BannedUntil:yyyy-MM-dd HH:mm}.", null);
+        }
+
+        if (passwordVerificationResult == PasswordVerificationResult.SuccessRehashNeeded)
+        {
+            user.PasswordHash = passwordHasher.HashPassword(user, model.Password);
+            user.ModifiedOn = DateTime.UtcNow;
+            await context.SaveChangesAsync();
         }
 
         return (true, null, user);
@@ -63,7 +84,7 @@ public class AccountService : IAccountService
 
         if (await context.Users.AnyAsync(item => item.Username == username))
         {
-            return (false, "Този username вече е зает.");
+            return (false, "Това потребителско име вече е заето.");
         }
 
         if (await context.Users.AnyAsync(item => item.Email == email))
@@ -75,10 +96,11 @@ public class AccountService : IAccountService
         {
             Username = username,
             Email = email,
-            PasswordHash = model.Password,
             Role = "User",
             CreatedOn = DateTime.UtcNow
         };
+
+        user.PasswordHash = passwordHasher.HashPassword(user, model.Password);
 
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
@@ -175,5 +197,23 @@ public class AccountService : IAccountService
         }
 
         return StrictEmailRegex.IsMatch(email);
+    }
+
+    private static bool IsIdentityPasswordHash(string passwordHash)
+    {
+        if (string.IsNullOrWhiteSpace(passwordHash))
+        {
+            return false;
+        }
+
+        try
+        {
+            var decoded = Convert.FromBase64String(passwordHash);
+            return decoded.Length > 0 && decoded[0] == 0x01;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 }

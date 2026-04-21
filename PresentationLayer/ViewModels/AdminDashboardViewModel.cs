@@ -135,8 +135,6 @@ public class AdminUserDetailsViewModel
 
     public string Role { get; set; } = string.Empty;
 
-    public string StoredPassword { get; set; } = string.Empty;
-
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }

@@ -1183,7 +1183,6 @@ public class MarketplaceService : IMarketplaceService
             Username = user.Username,
             Email = user.Email,
             Role = user.Role,
-            StoredPassword = user.PasswordHash,
             FirstName = user.Profile?.FirstName,
             LastName = user.Profile?.LastName,
             PhoneNumber = user.Profile?.PhoneNumber,

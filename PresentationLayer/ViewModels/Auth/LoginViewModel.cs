@@ -5,7 +5,7 @@ namespace PresentationLayer.ViewModels.Auth;
 public class LoginViewModel
 {
     [Required(ErrorMessage = "Полето е задължително.")]
-    [Display(Name = "Username или имейл")]
+    [Display(Name = "Потребителско име или имейл")]
     public string Identifier { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Полето е задължително.")]

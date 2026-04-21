@@ -1,5 +1,7 @@
+using BusinessLayer.Entities.Identity;
 using DataLayer;
 using DataLayer.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using PresentationLayer.Infrastructure;
@@ -25,6 +27,7 @@ builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserSessionService, UserSessionService>();
+builder.Services.AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
 
 var app = builder.Build();
 
@@ -64,9 +67,11 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<CraftflowDbContext>();
+    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<ApplicationUser>>();
     context.Database.Migrate();
     await AdminSchemaInitializer.EnsureAsync(context);
-    await AdminAccountInitializer.EnsureAsync(context);
+    await AdminAccountInitializer.EnsureAsync(context, passwordHasher);
+    await UserPasswordHashInitializer.EnsureAsync(context, passwordHasher);
 }
 
 app.Run();

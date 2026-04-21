@@ -5,8 +5,8 @@ namespace PresentationLayer.ViewModels.Auth;
 public class RegisterViewModel
 {
     [Required(ErrorMessage = "Полето е задължително.")]
-    [MinLength(3, ErrorMessage = "Username трябва да е поне 3 символа.")]
-    [Display(Name = "Username")]
+    [MinLength(3, ErrorMessage = "Потребителското име трябва да е поне 3 символа.")]
+    [Display(Name = "Потребителско име")]
     public string Username { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Полето е задължително.")]

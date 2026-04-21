@@ -61,7 +61,6 @@
             <span>Роля: @GetRoleLabel(Model.Role)</span>
             <span>Създаден: @Model.CreatedOn.ToString("MMM dd, yyyy")</span>
             <span>Статус: @(Model.IsBanned && Model.BannedUntil is not null ? $"Блокиран до {Model.BannedUntil.Value.ToLocalTime():MMM dd, yyyy HH:mm}" : "Активен")</span>
-            <span>Парола: <code>@Model.StoredPassword</code></span>
         </div>
     </div>
     <div class="profile-header-actions">
