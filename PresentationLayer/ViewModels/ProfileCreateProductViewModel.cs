@@ -24,5 +24,7 @@ public class ProfileCreateProductViewModel
 
     public string? GenderTag { get; set; }
 
+    public string? ColorTag { get; set; }
+
     public string? SizeTags { get; set; }
 }

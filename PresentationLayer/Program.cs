@@ -25,6 +25,7 @@ builder.Services.AddDbContext<CraftflowDbContext>(options =>
 
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceService>();
+builder.Services.AddSingleton<IImageStorageService, CloudinaryImageStorageService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserSessionService, UserSessionService>();
 builder.Services.AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
@@ -67,11 +68,25 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<CraftflowDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var marketplaceService = scope.ServiceProvider.GetRequiredService<IMarketplaceService>();
     var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<ApplicationUser>>();
     context.Database.Migrate();
     await AdminSchemaInitializer.EnsureAsync(context);
     await AdminAccountInitializer.EnsureAsync(context, passwordHasher);
     await UserPasswordHashInitializer.EnsureAsync(context, passwordHasher);
+
+    var cleanupLegacyProducts = app.Configuration.GetValue<bool?>("Storage:CleanupLegacyLocalProductsOnStartup") ?? true;
+    if (cleanupLegacyProducts)
+    {
+        var removedProducts = await marketplaceService.PurgeProductsWithLegacyLocalImagesAsync();
+        if (removedProducts > 0)
+        {
+            logger.LogInformation(
+                "Изтрити са {RemovedProducts} legacy обяви с локални снимки (/uploads/products/*).",
+                removedProducts);
+        }
+    }
 }
 
 app.Run();

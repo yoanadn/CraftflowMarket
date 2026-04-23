@@ -4,6 +4,7 @@
     var showFavouriteButton = !(ViewData["HideFavouriteButton"] as bool? ?? false) && !UserSession.IsAdmin;
     var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
     var hasGenderTag = !string.IsNullOrWhiteSpace(Model.GenderTag);
+    var hasColorTag = !string.IsNullOrWhiteSpace(Model.ColorTag);
     var visibleSizeTags = Model.SizeTags.Take(2).ToList();
     var hasMoreSizes = Model.SizeTags.Count > visibleSizeTags.Count;
     string GenderLabel(string value) => value.ToLowerInvariant() switch
@@ -12,6 +13,25 @@
         "men" => "Мъж",
         "unisex" => "Унисекс",
         "kids" => "Деца",
+        _ => value
+    };
+    string ColorLabel(string value) => value.ToLowerInvariant() switch
+    {
+        "red" => "Червен",
+        "blue" => "Син",
+        "yellow" => "Жълт",
+        "green" => "Зелен",
+        "orange" => "Оранжев",
+        "purple" => "Лилав",
+        "pink" => "Розов",
+        "brown" => "Кафяв",
+        "black" => "Черен",
+        "white" => "Бял",
+        "gray" => "Сив",
+        "gold" => "Златист",
+        "silver" => "Сребрист",
+        "multicolor" => "Шарено",
+        "black-white" => "Черно-бял",
         _ => value
     };
 }
@@ -47,12 +67,16 @@
         <p class="product-category">@Model.Category</p>
         <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id" class="product-name">@Model.Name</a>
         <p class="product-shop">@Model.ShopName</p>
-        @if (hasGenderTag || visibleSizeTags.Count > 0)
+        @if (hasGenderTag || hasColorTag || visibleSizeTags.Count > 0)
         {
             <div class="product-chip-row">
                 @if (hasGenderTag)
                 {
                     <span class="product-chip">@GenderLabel(Model.GenderTag!)</span>
+                }
+                @if (hasColorTag)
+                {
+                    <span class="product-chip">@ColorLabel(Model.ColorTag!)</span>
                 }
                 @foreach (var sizeTag in visibleSizeTags)
                 {

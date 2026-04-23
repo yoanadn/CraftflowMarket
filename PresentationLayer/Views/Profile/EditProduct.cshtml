@@ -54,11 +54,33 @@
                 </label>
 
                 <label>
+                    Етикет за цвят
+                    <select asp-for="ColorTag">
+                        <option value="">Не е посочено</option>
+                        <option value="red">Червен</option>
+                        <option value="blue">Син</option>
+                        <option value="yellow">Жълт</option>
+                        <option value="green">Зелен</option>
+                        <option value="orange">Оранжев</option>
+                        <option value="purple">Лилав</option>
+                        <option value="pink">Розов</option>
+                        <option value="brown">Кафяв</option>
+                        <option value="black">Черен</option>
+                        <option value="white">Бял</option>
+                        <option value="gray">Сив</option>
+                        <option value="gold">Златист</option>
+                        <option value="silver">Сребрист</option>
+                        <option value="multicolor">Шарено</option>
+                        <option value="black-white">Черно-бял</option>
+                    </select>
+                </label>
+            </div>
+
+            <label>
                     Етикети за размер
                     <input asp-for="SizeTags" placeholder="EU 38, EU 39, M" />
                     <span class="soft-text">По желание. Остави празно за продукти без размер.</span>
                 </label>
-            </div>
 
             <label>
                 Добави още снимки

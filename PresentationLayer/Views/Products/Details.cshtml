@@ -9,12 +9,32 @@
     var mainImage = galleryImages.First();
     var isAdmin = UserSession.IsAdmin;
     var hasGenderTag = !string.IsNullOrWhiteSpace(Model.GenderTag);
+    var hasColorTag = !string.IsNullOrWhiteSpace(Model.ColorTag);
     string GenderLabel(string value) => value.ToLowerInvariant() switch
     {
         "women" => "Жена",
         "men" => "Мъж",
         "unisex" => "Унисекс",
         "kids" => "Деца",
+        _ => value
+    };
+    string ColorLabel(string value) => value.ToLowerInvariant() switch
+    {
+        "red" => "Червен",
+        "blue" => "Син",
+        "yellow" => "Жълт",
+        "green" => "Зелен",
+        "orange" => "Оранжев",
+        "purple" => "Лилав",
+        "pink" => "Розов",
+        "brown" => "Кафяв",
+        "black" => "Черен",
+        "white" => "Бял",
+        "gray" => "Сив",
+        "gold" => "Златист",
+        "silver" => "Сребрист",
+        "multicolor" => "Шарено",
+        "black-white" => "Черно-бял",
         _ => value
     };
 }
@@ -49,12 +69,16 @@
         {
             <p class="product-rating">Рейтинг @Model.Rating.ToString("0.0") (@Model.ReviewsCount отзива)</p>
         }
-        @if (hasGenderTag || Model.SizeTags.Count > 0)
+        @if (hasGenderTag || hasColorTag || Model.SizeTags.Count > 0)
         {
             <div class="product-chip-row details-chip-row">
                 @if (hasGenderTag)
                 {
                     <span class="product-chip">@GenderLabel(Model.GenderTag!)</span>
+                }
+                @if (hasColorTag)
+                {
+                    <span class="product-chip">@ColorLabel(Model.ColorTag!)</span>
                 }
                 @foreach (var sizeTag in Model.SizeTags)
                 {

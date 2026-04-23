@@ -170,6 +170,7 @@ public class ProfileController : Controller
             invalidModel.Price = model.Price;
             invalidModel.Description = model.Description;
             invalidModel.GenderTag = model.GenderTag;
+            invalidModel.ColorTag = model.ColorTag;
             invalidModel.SizeTags = model.SizeTags;
             invalidModel.RemoveImageIds = model.RemoveImageIds;
             return View(invalidModel);
@@ -189,6 +190,7 @@ public class ProfileController : Controller
             failedModel.Price = model.Price;
             failedModel.Description = model.Description;
             failedModel.GenderTag = model.GenderTag;
+            failedModel.ColorTag = model.ColorTag;
             failedModel.SizeTags = model.SizeTags;
             failedModel.RemoveImageIds = model.RemoveImageIds;
             ModelState.AddModelError(string.Empty, result.Error ?? "Неуспешно обновяване на продукта.");

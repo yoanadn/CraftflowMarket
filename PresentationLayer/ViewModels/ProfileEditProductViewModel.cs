@@ -26,6 +26,8 @@ public class ProfileEditProductViewModel
 
     public string? GenderTag { get; set; }
 
+    public string? ColorTag { get; set; }
+
     public string? SizeTags { get; set; }
 
     public IReadOnlyList<ProfileProductImageViewModel> ExistingImages { get; set; } = [];

@@ -79,4 +79,6 @@ public interface IMarketplaceService
     Task<bool> UpdateOrderStatusAsync(int orderId, OrderStatus status);
 
     Task ResetMarketplaceDataKeepAdminAsync();
+
+    Task<int> PurgeProductsWithLegacyLocalImagesAsync();
 }

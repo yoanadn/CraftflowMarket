@@ -37,13 +37,36 @@ public class MarketplaceService : IMarketplaceService
     private const string CashOnDeliveryPaymentLabel = "Наложен платеж";
 
     private static readonly IReadOnlyList<string> DefaultGenderTags = ["women", "men", "unisex", "kids"];
+    private static readonly IReadOnlyList<string> DefaultColorTags =
+    [
+        "red",
+        "blue",
+        "yellow",
+        "green",
+        "orange",
+        "purple",
+        "pink",
+        "brown",
+        "black",
+        "white",
+        "gray",
+        "gold",
+        "silver",
+        "multicolor",
+        "black-white"
+    ];
     private readonly CraftflowDbContext context;
     private readonly IWebHostEnvironment environment;
+    private readonly IImageStorageService imageStorage;
 
-    public MarketplaceService(CraftflowDbContext context, IWebHostEnvironment environment)
+    public MarketplaceService(
+        CraftflowDbContext context,
+        IWebHostEnvironment environment,
+        IImageStorageService imageStorage)
     {
         this.context = context;
         this.environment = environment;
+        this.imageStorage = imageStorage;
     }
 
     public async Task<HomePageViewModel> GetHomePageAsync(int? userId, string? searchQuery)
@@ -130,6 +153,7 @@ public class MarketplaceService : IMarketplaceService
                     || product.Category.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
                     || product.ShopName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
                     || (!string.IsNullOrWhiteSpace(product.GenderTag) && product.GenderTag.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                    || (!string.IsNullOrWhiteSpace(product.ColorTag) && product.ColorTag.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                     || product.SizeTags.Any(tag => tag.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
@@ -248,6 +272,7 @@ public class MarketplaceService : IMarketplaceService
             Description = selected.Description,
             Price = selected.Price,
             GenderTag = selected.GenderTag,
+            ColorTag = selected.ColorTag,
             SizeTags = selected.SizeTags,
             Rating = selected.Rating,
             ReviewsCount = selected.ReviewsCount,
@@ -676,7 +701,7 @@ public class MarketplaceService : IMarketplaceService
         {
             ShopId = shop.Id,
             Name = model.Name.Trim(),
-            Description = BuildMetadataDescription(model.Category, model.Price, model.Description, model.GenderTag, ParseSizeTagsInput(model.SizeTags)),
+            Description = BuildMetadataDescription(model.Category, model.Price, model.Description, model.GenderTag, model.ColorTag, ParseSizeTagsInput(model.SizeTags)),
             Price = new Money { Amount = model.Price, Currency = "EUR" },
             Status = ProductStatus.Active,
             CreatedOn = now
@@ -700,6 +725,8 @@ public class MarketplaceService : IMarketplaceService
         var uploadResult = await SaveProductImagesAsync(product.Id, normalizedFiles);
         if (!uploadResult.Success)
         {
+            context.Products.Remove(product);
+            await context.SaveChangesAsync();
             return (false, uploadResult.Error);
         }
 
@@ -748,6 +775,7 @@ public class MarketplaceService : IMarketplaceService
             Price = metadata.Price,
             Description = metadata.Description,
             GenderTag = metadata.GenderTag,
+            ColorTag = metadata.ColorTag,
             SizeTags = string.Join(", ", metadata.SizeTags),
             ExistingImages = images,
             AvailableCategories = categories
@@ -791,7 +819,7 @@ public class MarketplaceService : IMarketplaceService
         }
 
         product.Name = model.Name.Trim();
-        product.Description = BuildMetadataDescription(model.Category, model.Price, model.Description, model.GenderTag, ParseSizeTagsInput(model.SizeTags));
+        product.Description = BuildMetadataDescription(model.Category, model.Price, model.Description, model.GenderTag, model.ColorTag, ParseSizeTagsInput(model.SizeTags));
         product.ModifiedOn = DateTime.UtcNow;
 
         if (imagesToRemove.Count > 0)
@@ -800,7 +828,7 @@ public class MarketplaceService : IMarketplaceService
 
             foreach (var image in imagesToRemove)
             {
-                DeleteProductImageFileIfLocal(image.ImageUrl);
+                await DeleteProductImageAssetAsync(image.ImageUrl);
             }
         }
 
@@ -828,26 +856,7 @@ public class MarketplaceService : IMarketplaceService
             return (false, "Продуктът не е намерен.");
         }
 
-        var productImages = await context.Set<ProductImage>().Where(item => item.ProductId == productId).ToListAsync();
-        var reviews = context.Reviews.Where(item => item.ProductId == productId);
-        var favourites = context.FavouriteProducts.Where(item => item.ProductId == productId);
-        var cartItems = context.Set<CartItem>().Where(item => item.ProductId == productId);
-        var orderItems = context.Set<OrderItem>().Where(item => item.ProductId == productId);
-        var reports = context.Reports.Where(item => item.TargetType == ReportTargetType.Product && item.TargetId == productId);
-
-        context.Set<ProductImage>().RemoveRange(productImages);
-
-        foreach (var image in productImages)
-        {
-            DeleteProductImageFileIfLocal(image.ImageUrl);
-        }
-
-        context.Reviews.RemoveRange(reviews);
-        context.FavouriteProducts.RemoveRange(favourites);
-        context.Set<CartItem>().RemoveRange(cartItems);
-        context.Set<OrderItem>().RemoveRange(orderItems);
-        context.Reports.RemoveRange(reports);
-        context.Products.Remove(product);
+        await DeleteProductGraphAsync(product);
 
         await context.SaveChangesAsync();
         return (true, null);
@@ -1235,7 +1244,7 @@ public class MarketplaceService : IMarketplaceService
 
         var existingMetadata = ParseProductMetadata(product.Description, product.Id);
         product.Name = model.Name.Trim();
-        product.Description = BuildMetadataDescription(model.Category, model.Price, model.Description, existingMetadata.GenderTag, existingMetadata.SizeTags);
+        product.Description = BuildMetadataDescription(model.Category, model.Price, model.Description, existingMetadata.GenderTag, existingMetadata.ColorTag, existingMetadata.SizeTags);
         product.Status = model.Status;
         product.ModifiedOn = DateTime.UtcNow;
 
@@ -1432,6 +1441,11 @@ public class MarketplaceService : IMarketplaceService
             .Select(item => item.Id)
             .ToListAsync();
 
+        var allProductImageUrls = await context.Set<ProductImage>()
+            .AsNoTracking()
+            .Select(item => item.ImageUrl)
+            .ToListAsync();
+
         if (adminUserIds.Count == 0)
         {
             return;
@@ -1475,6 +1489,11 @@ public class MarketplaceService : IMarketplaceService
 
         DeleteUploadsInDirectory("products");
         DeleteUploadsInDirectory("profiles");
+
+        foreach (var imageUrl in allProductImageUrls)
+        {
+            await DeleteProductImageAssetAsync(imageUrl);
+        }
     }
 
     public async Task DeleteProductAsync(int productId)
@@ -1486,20 +1505,7 @@ public class MarketplaceService : IMarketplaceService
             return;
         }
 
-        var productImages = context.Set<ProductImage>().Where(item => item.ProductId == productId);
-        var reviews = context.Reviews.Where(item => item.ProductId == productId);
-        var favourites = context.FavouriteProducts.Where(item => item.ProductId == productId);
-        var cartItems = context.Set<CartItem>().Where(item => item.ProductId == productId);
-        var orderItems = context.Set<OrderItem>().Where(item => item.ProductId == productId);
-        var reports = context.Reports.Where(item => item.TargetType == ReportTargetType.Product && item.TargetId == productId);
-
-        context.Set<ProductImage>().RemoveRange(productImages);
-        context.Reviews.RemoveRange(reviews);
-        context.FavouriteProducts.RemoveRange(favourites);
-        context.Set<CartItem>().RemoveRange(cartItems);
-        context.Set<OrderItem>().RemoveRange(orderItems);
-        context.Reports.RemoveRange(reports);
-        context.Products.Remove(product);
+        await DeleteProductGraphAsync(product);
 
         await context.ModerationActions.AddAsync(new ModerationAction
         {
@@ -1561,12 +1567,21 @@ public class MarketplaceService : IMarketplaceService
 
         if (productIds.Count > 0)
         {
-            context.Set<ProductImage>().RemoveRange(context.Set<ProductImage>().Where(item => productIds.Contains(item.ProductId)));
+            var userProductImages = await context.Set<ProductImage>()
+                .Where(item => productIds.Contains(item.ProductId))
+                .ToListAsync();
+
+            context.Set<ProductImage>().RemoveRange(userProductImages);
             context.Reviews.RemoveRange(context.Reviews.Where(item => productIds.Contains(item.ProductId)));
             context.FavouriteProducts.RemoveRange(context.FavouriteProducts.Where(item => productIds.Contains(item.ProductId)));
             context.Set<CartItem>().RemoveRange(context.Set<CartItem>().Where(item => productIds.Contains(item.ProductId)));
             context.Set<OrderItem>().RemoveRange(context.Set<OrderItem>().Where(item => productIds.Contains(item.ProductId)));
             context.Products.RemoveRange(context.Products.Where(item => productIds.Contains(item.Id)));
+
+            foreach (var image in userProductImages)
+            {
+                await DeleteProductImageAssetAsync(image.ImageUrl);
+            }
         }
 
         if (shopIds.Count > 0)
@@ -1616,6 +1631,40 @@ public class MarketplaceService : IMarketplaceService
         });
 
         await context.SaveChangesAsync();
+    }
+
+    public async Task<int> PurgeProductsWithLegacyLocalImagesAsync()
+    {
+        var legacyProductIds = await context.Set<ProductImage>()
+            .AsNoTracking()
+            .Where(item => item.ImageUrl.StartsWith("/uploads/products/"))
+            .Select(item => item.ProductId)
+            .Distinct()
+            .ToListAsync();
+
+        if (legacyProductIds.Count == 0)
+        {
+            return 0;
+        }
+
+        var productsToDelete = await context.Products
+            .Where(item => legacyProductIds.Contains(item.Id))
+            .ToListAsync();
+
+        if (productsToDelete.Count == 0)
+        {
+            return 0;
+        }
+
+        foreach (var product in productsToDelete)
+        {
+            await DeleteProductGraphAsync(product);
+        }
+
+        await context.SaveChangesAsync();
+        DeleteUploadsInDirectory("products");
+
+        return productsToDelete.Count;
     }
 
     private static decimal CalculateOrderSubtotal(Order order)
@@ -1753,6 +1802,7 @@ public class MarketplaceService : IMarketplaceService
                     Description = metadata.Description,
                     Price = metadata.Price,
                     GenderTag = metadata.GenderTag,
+                    ColorTag = metadata.ColorTag,
                     SizeTags = metadata.SizeTags,
                     ShopName = product.Shop.Name,
                     ShopDescription = product.Shop.Description ?? "Независим магазин за ръчна изработка",
@@ -1819,6 +1869,7 @@ public class MarketplaceService : IMarketplaceService
             Category = product.Category,
             Price = product.Price,
             GenderTag = product.GenderTag,
+            ColorTag = product.ColorTag,
             SizeTags = product.SizeTags,
             Rating = product.Rating,
             ReviewsCount = product.ReviewsCount,
@@ -1873,6 +1924,7 @@ public class MarketplaceService : IMarketplaceService
         var category = defaultCategory;
         var price = BuildFallbackPrice(productId);
         string? genderTag = null;
+        string? colorTag = null;
         IReadOnlyList<string> sizeTags = [];
 
         if (description.StartsWith("[", StringComparison.Ordinal) && description.Contains(']'))
@@ -1909,6 +1961,13 @@ public class MarketplaceService : IMarketplaceService
                     continue;
                 }
 
+                if (parts[0].Equals("color", StringComparison.OrdinalIgnoreCase)
+                    || parts[0].Equals("colour", StringComparison.OrdinalIgnoreCase))
+                {
+                    colorTag = NormalizeColorTag(parts[1]);
+                    continue;
+                }
+
                 if (parts[0].Equals("sizes", StringComparison.OrdinalIgnoreCase) || parts[0].Equals("size", StringComparison.OrdinalIgnoreCase))
                 {
                     sizeTags = ParseSizeTagsInput(parts[1]);
@@ -1927,6 +1986,7 @@ public class MarketplaceService : IMarketplaceService
             Price = price,
             Description = description,
             GenderTag = genderTag,
+            ColorTag = colorTag,
             SizeTags = sizeTags
         };
     }
@@ -1936,6 +1996,7 @@ public class MarketplaceService : IMarketplaceService
         decimal price,
         string description,
         string? genderTag = null,
+        string? colorTag = null,
         IReadOnlyList<string>? sizeTags = null)
     {
         var cleanCategory = SanitizeMetadataValue(NormalizeCategoryName(category));
@@ -1953,6 +2014,12 @@ public class MarketplaceService : IMarketplaceService
         if (!string.IsNullOrWhiteSpace(normalizedGender))
         {
             metadataTokens.Add($"gender={normalizedGender}");
+        }
+
+        var normalizedColor = NormalizeColorTag(colorTag);
+        if (!string.IsNullOrWhiteSpace(normalizedColor))
+        {
+            metadataTokens.Add($"color={normalizedColor}");
         }
 
         var normalizedSizes = (sizeTags ?? [])
@@ -2018,6 +2085,35 @@ public class MarketplaceService : IMarketplaceService
             "unisex" or "uni" => "unisex",
             "kids" or "kid" or "children" or "child" or "deca" or "детски" or "деца" => "kids",
             _ => null
+        };
+    }
+
+    private static string? NormalizeColorTag(string? rawColorTag)
+    {
+        if (string.IsNullOrWhiteSpace(rawColorTag))
+        {
+            return null;
+        }
+
+        var value = CollapseWhitespaces(rawColorTag.Trim().ToLowerInvariant());
+        return value switch
+        {
+            "red" or "червен" or "червена" or "червено" => "red",
+            "blue" or "син" or "синя" or "синьо" => "blue",
+            "yellow" or "жълт" or "жълта" or "жълто" => "yellow",
+            "green" or "зелен" or "зелена" or "зелено" => "green",
+            "orange" or "оранжев" or "оранжева" or "оранжево" => "orange",
+            "purple" or "лилав" or "лилава" or "лилаво" => "purple",
+            "pink" or "розов" or "розова" or "розово" => "pink",
+            "brown" or "кафяв" or "кафява" or "кафяво" => "brown",
+            "black" or "черен" or "черна" or "черно" => "black",
+            "white" or "бял" or "бяла" or "бяло" => "white",
+            "gray" or "grey" or "сив" or "сива" or "сиво" => "gray",
+            "gold" or "златист" or "златна" or "златно" => "gold",
+            "silver" or "сребрист" or "сребърна" or "сребърно" => "silver",
+            "multicolor" or "multicolour" or "multi-color" or "multi-colour" or "multi" or "шарено" or "многоцветно" => "multicolor",
+            "black-white" or "black white" or "black and white" or "black/white" or "bw" or "черно-бял" or "черно бял" => "black-white",
+            _ => DefaultColorTags.Contains(value) ? value : null
         };
     }
 
@@ -2111,6 +2207,34 @@ public class MarketplaceService : IMarketplaceService
         return imageFiles.All(item => item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase));
     }
 
+    private async Task DeleteProductGraphAsync(Product product)
+    {
+        var productId = product.Id;
+        var productImages = await context.Set<ProductImage>()
+            .Where(item => item.ProductId == productId)
+            .ToListAsync();
+
+        var reviews = context.Reviews.Where(item => item.ProductId == productId);
+        var favourites = context.FavouriteProducts.Where(item => item.ProductId == productId);
+        var cartItems = context.Set<CartItem>().Where(item => item.ProductId == productId);
+        var orderItems = context.Set<OrderItem>().Where(item => item.ProductId == productId);
+        var reports = context.Reports.Where(item => item.TargetType == ReportTargetType.Product && item.TargetId == productId);
+
+        context.Set<ProductImage>().RemoveRange(productImages);
+
+        foreach (var image in productImages)
+        {
+            await DeleteProductImageAssetAsync(image.ImageUrl);
+        }
+
+        context.Reviews.RemoveRange(reviews);
+        context.FavouriteProducts.RemoveRange(favourites);
+        context.Set<CartItem>().RemoveRange(cartItems);
+        context.Set<OrderItem>().RemoveRange(orderItems);
+        context.Reports.RemoveRange(reports);
+        context.Products.Remove(product);
+    }
+
     private async Task<(bool Success, string? Error)> SaveProductImagesAsync(int productId, IReadOnlyList<IFormFile> imageFiles)
     {
         if (imageFiles.Count == 0)
@@ -2118,29 +2242,30 @@ public class MarketplaceService : IMarketplaceService
             return (true, null);
         }
 
-        var uploadsDirectory = Path.Combine(environment.WebRootPath, "uploads", "products");
-        Directory.CreateDirectory(uploadsDirectory);
+        var uploadedUrls = new List<string>(imageFiles.Count);
 
         foreach (var imageFile in imageFiles)
         {
-            var extension = Path.GetExtension(imageFile.FileName);
-            if (string.IsNullOrWhiteSpace(extension))
+            var uploadResult = await imageStorage.UploadProductImageAsync(productId, imageFile);
+            if (!uploadResult.Success || string.IsNullOrWhiteSpace(uploadResult.Url))
             {
-                extension = ".jpg";
+                foreach (var uploadedUrl in uploadedUrls)
+                {
+                    await DeleteProductImageAssetAsync(uploadedUrl);
+                }
+
+                return (false, uploadResult.Error ?? "Неуспешно качване на снимка в cloud storage.");
             }
 
-            var fileName = $"product_{productId}_{Guid.NewGuid():N}{extension}";
-            var absolutePath = Path.Combine(uploadsDirectory, fileName);
+            uploadedUrls.Add(uploadResult.Url);
+        }
 
-            await using (var stream = File.Create(absolutePath))
-            {
-                await imageFile.CopyToAsync(stream);
-            }
-
+        foreach (var imageUrl in uploadedUrls)
+        {
             await context.Set<ProductImage>().AddAsync(new ProductImage
             {
                 ProductId = productId,
-                ImageUrl = $"/uploads/products/{fileName}",
+                ImageUrl = imageUrl,
                 CreatedOn = DateTime.UtcNow
             });
         }
@@ -2149,20 +2274,40 @@ public class MarketplaceService : IMarketplaceService
         return (true, null);
     }
 
-    private void DeleteProductImageFileIfLocal(string imageUrl)
+    private async Task DeleteProductImageAssetAsync(string imageUrl)
     {
-        if (string.IsNullOrWhiteSpace(imageUrl) || !imageUrl.StartsWith("/uploads/products/", StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(imageUrl))
         {
             return;
         }
 
-        var relativePath = imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-        var absolutePath = Path.Combine(environment.WebRootPath, relativePath);
-
-        if (File.Exists(absolutePath))
+        if (IsLegacyLocalProductImageUrl(imageUrl))
         {
-            File.Delete(absolutePath);
+            var relativePath = imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+            var absolutePath = Path.Combine(environment.WebRootPath, relativePath);
+
+            if (File.Exists(absolutePath))
+            {
+                File.Delete(absolutePath);
+            }
+
+            return;
         }
+
+        try
+        {
+            await imageStorage.DeleteImageIfManagedAsync(imageUrl);
+        }
+        catch
+        {
+            // Ignore storage cleanup failures to avoid blocking business operations.
+        }
+    }
+
+    private static bool IsLegacyLocalProductImageUrl(string imageUrl)
+    {
+        return !string.IsNullOrWhiteSpace(imageUrl)
+            && imageUrl.StartsWith("/uploads/products/", StringComparison.OrdinalIgnoreCase);
     }
 
     private void DeleteUploadsInDirectory(string folderName)
@@ -2269,6 +2414,8 @@ public class MarketplaceService : IMarketplaceService
 
         public string? GenderTag { get; init; }
 
+        public string? ColorTag { get; init; }
+
         public IReadOnlyList<string> SizeTags { get; init; } = [];
 
         public string ShopName { get; init; } = string.Empty;
@@ -2297,6 +2444,8 @@ public class MarketplaceService : IMarketplaceService
         public string Description { get; init; } = string.Empty;
 
         public string? GenderTag { get; init; }
+
+        public string? ColorTag { get; init; }
 
         public IReadOnlyList<string> SizeTags { get; init; } = [];
     }

@@ -12,6 +12,8 @@ public class ProductCardViewModel
 
     public string? GenderTag { get; set; }
 
+    public string? ColorTag { get; set; }
+
     public IReadOnlyList<string> SizeTags { get; set; } = [];
 
     public double Rating { get; set; }
